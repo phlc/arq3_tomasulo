@@ -16,21 +16,37 @@ class View(QMainWindow):
         self.ui = Ui_View()
         self.ui.setupUi(self)
 
+        #Font
+        font = QtGui.QFont()
+        font.setBold(True)
+
         #Instruction Cache
         self.ui.inst_cache.setColumnWidth(0,43)
-        self.ui.inst_cache.setColumnWidth(1,99)
+        self.ui.inst_cache.setColumnWidth(1,102)
         self.ui.inst_cache.verticalHeader().setVisible(False)
         self.ui.inst_cache.horizontalHeader().setVisible(False)
         self.ui.inst_cache.setRowCount(1)
         self.ui.inst_cache.setItem(0,0, QTableWidgetItem("Addr"))
         self.ui.inst_cache.setItem(0,1, QTableWidgetItem("Instruction"))
-        font = QtGui.QFont()
-        font.setBold(True)
         self.ui.inst_cache.item(0,0).setTextAlignment(Qt.AlignTop)
         self.ui.inst_cache.item(0,1).setTextAlignment(Qt.AlignTop)
         self.ui.inst_cache.item(0,0).setFont(font)
         self.ui.inst_cache.item(0,1).setFont(font)
         self.ui.inst_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        #Instruction Queue
+        self.ui.inst_queue.setColumnWidth(0,43)
+        self.ui.inst_queue.setColumnWidth(1,102)
+        self.ui.inst_queue.verticalHeader().setVisible(False)
+        self.ui.inst_queue.horizontalHeader().setVisible(False)
+        self.ui.inst_queue.setRowCount(1)
+        self.ui.inst_queue.setItem(0,0, QTableWidgetItem("Id"))
+        self.ui.inst_queue.setItem(0,1, QTableWidgetItem("Instruction"))
+        self.ui.inst_queue.item(0,0).setTextAlignment(Qt.AlignTop)
+        self.ui.inst_queue.item(0,1).setTextAlignment(Qt.AlignTop)
+        self.ui.inst_queue.item(0,0).setFont(font)
+        self.ui.inst_queue.item(0,1).setFont(font)
+        self.ui.inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         #Control
         self.ui.control.setColumnWidth(0,50)
@@ -150,7 +166,7 @@ class View(QMainWindow):
             file = open (fname, "r")
             instructions = []
             for line in file:
-                instructions.append(line.strip("\n").strip(";"))
+                instructions.append(line.strip("\n").strip(";").lower())
             
             addr = 0
             for i in range(0,len(instructions)):
