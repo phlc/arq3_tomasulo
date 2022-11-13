@@ -163,19 +163,38 @@ class View(QMainWindow):
         fname = QFileDialog.getOpenFileName(self, "Load File", "", "Python Files (*.asm)")
         if fname:
             fname = fname[0]
-            file = open (fname, "r")
             instructions = []
-            for line in file:
-                instructions.append(line.strip("\n").strip(";").lower())
-            
+            data = []
+            with open(fname, "r") as file:
+                line = file.readline().strip('\n').strip().lower()
+                while(line != ".data"):
+                    if(line != ""):
+                        instructions.append(line)
+                    line = file.readline().strip('\n').strip().lower()
+
+                line = file.readline().strip('\n').strip().lower()
+                while(line):
+                    if(line != ""):
+                        data.append(line)
+                    line = file.readline().strip('\n').strip().lower()
+
+
             addr = 0
             for i in range(0,len(instructions)):
                 self.ui.inst_cache.insertRow(i+1)
                 self.ui.inst_cache.setItem(i+1,0, QTableWidgetItem(str(addr)))
                 self.ui.inst_cache.setItem(i+1,1, QTableWidgetItem(instructions[i]))
                 addr+=4
-
             self.ui.inst_cache.item(1,0).setBackground(QtGui.QBrush(QtGui.QColor(255, 0, 0)))
+
+
+            addr = 0
+            for i in range(0,len(data)):
+                self.ui.data_cache.insertRow(i+1)
+                self.ui.data_cache.setItem(i+1,0, QTableWidgetItem(str(addr)))
+                self.ui.data_cache.setItem(i+1,1, QTableWidgetItem(data[i]))
+                addr+=4
+
 
 
 if __name__ == "__main__":
