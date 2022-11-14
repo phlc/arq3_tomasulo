@@ -6,7 +6,13 @@ from PyQt5.QtCore import Qt
 from ui_form import Ui_View
 import tomasulo as tm
 
-global loaded, queue_size, clock, pc
+# Constants
+global queue_size
+
+# Global Variables
+global loaded, inst_cache, inst_queue, registers, data_cache, reorder_buffer, clock, pc
+
+# Config
 loaded = False
 queue_size = 6
 
@@ -17,43 +23,46 @@ class View(QMainWindow):
         self.ui.setupUi(self)
 
         #Global Variable
-        global loaded, queue_size, clock, pc
+        global queue_size
+        global loaded, inst_cache, inst_queue, clock, pc
 
         #Font
         font = QtGui.QFont()
         font.setBold(True)
 
         #Instruction Cache
-        self.ui.inst_cache.setColumnWidth(0,43)
-        self.ui.inst_cache.setColumnWidth(1,102)
-        self.ui.inst_cache.verticalHeader().setVisible(False)
-        self.ui.inst_cache.horizontalHeader().setVisible(False)
-        self.ui.inst_cache.setRowCount(1)
-        self.ui.inst_cache.setItem(0,0, QTableWidgetItem("Addr"))
-        self.ui.inst_cache.setItem(0,1, QTableWidgetItem(" Instruction"))
-        self.ui.inst_cache.item(0,0).setTextAlignment(Qt.AlignTop)
-        self.ui.inst_cache.item(0,1).setTextAlignment(Qt.AlignTop)
-        self.ui.inst_cache.item(0,0).setFont(font)
-        self.ui.inst_cache.item(0,1).setFont(font)
-        self.ui.inst_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        inst_cache = self.ui.inst_cache
+        inst_cache.setColumnWidth(0,43)
+        inst_cache.setColumnWidth(1,102)
+        inst_cache.verticalHeader().setVisible(False)
+        inst_cache.horizontalHeader().setVisible(False)
+        inst_cache.setRowCount(1)
+        inst_cache.setItem(0,0, QTableWidgetItem("Addr"))
+        inst_cache.setItem(0,1, QTableWidgetItem(" Instruction"))
+        inst_cache.item(0,0).setTextAlignment(Qt.AlignTop)
+        inst_cache.item(0,1).setTextAlignment(Qt.AlignTop)
+        inst_cache.item(0,0).setFont(font)
+        inst_cache.item(0,1).setFont(font)
+        inst_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         #Instruction Queue
-        self.ui.inst_queue.setColumnWidth(0,43)
-        self.ui.inst_queue.setColumnWidth(1,102)
-        self.ui.inst_queue.verticalHeader().setVisible(False)
-        self.ui.inst_queue.horizontalHeader().setVisible(False)
-        self.ui.inst_queue.setRowCount(queue_size+1)
-        self.ui.inst_queue.setItem(0,0, QTableWidgetItem("Id"))
-        self.ui.inst_queue.setItem(0,1, QTableWidgetItem(" Instruction"))
-        self.ui.inst_queue.item(0,0).setTextAlignment(Qt.AlignTop)
-        self.ui.inst_queue.item(0,1).setTextAlignment(Qt.AlignTop)
-        self.ui.inst_queue.item(0,0).setFont(font)
-        self.ui.inst_queue.item(0,1).setFont(font)
-        self.ui.inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.inst_queue.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        inst_queue = self.ui.inst_queue
+        inst_queue.setColumnWidth(0,43)
+        inst_queue.setColumnWidth(1,102)
+        inst_queue.verticalHeader().setVisible(False)
+        inst_queue.horizontalHeader().setVisible(False)
+        inst_queue.setRowCount(queue_size+1)
+        inst_queue.setItem(0,0, QTableWidgetItem("Id"))
+        inst_queue.setItem(0,1, QTableWidgetItem(" Instruction"))
+        inst_queue.item(0,0).setTextAlignment(Qt.AlignTop)
+        inst_queue.item(0,1).setTextAlignment(Qt.AlignTop)
+        inst_queue.item(0,0).setFont(font)
+        inst_queue.item(0,1).setFont(font)
+        inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        inst_queue.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for i in range(1,7):
-            self.ui.inst_queue.setItem(i,0, QTableWidgetItem("-"))
-            self.ui.inst_queue.setItem(i,1, QTableWidgetItem("-"))
+            inst_queue.setItem(i,0, QTableWidgetItem("-"))
+            inst_queue.setItem(i,1, QTableWidgetItem("-"))
 
         #Control
         self.ui.control.setColumnWidth(0,50)
@@ -64,115 +73,122 @@ class View(QMainWindow):
         self.ui.control.setItem(1,0, QTableWidgetItem("PC"))
         self.ui.control.item(0,0).setFont(font)
         self.ui.control.item(1,0).setFont(font)
+
         self.ui.control.setItem(0,1, QTableWidgetItem("0"))
         self.ui.control.setItem(1,1, QTableWidgetItem("0"))
         clock = self.ui.control.item(0,1)
         pc = self.ui.control.item(1,1)
+        
         clock.setFont(font)
         pc.setFont(font)
         self.ui.control.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.ui.control.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         #Registers
-        self.ui.registers.verticalHeader().setVisible(False)
-        self.ui.registers.horizontalHeader().setVisible(False)
-        self.ui.registers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.registers.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        registers = self.ui.registers
+        registers.verticalHeader().setVisible(False)
+        registers.horizontalHeader().setVisible(False)
+        registers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        registers.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for i in range(0, 10):
-            self.ui.registers.setItem(0,i, QTableWidgetItem(f'R{i}'))
-            self.ui.registers.setItem(1,i, QTableWidgetItem("-"))
-            self.ui.registers.item(0,i).setTextAlignment(Qt.AlignCenter)
-            self.ui.registers.item(1,i).setTextAlignment(Qt.AlignCenter)
+            registers.setItem(0,i, QTableWidgetItem(f'R{i}'))
+            registers.setItem(1,i, QTableWidgetItem("-"))
+            registers.item(0,i).setTextAlignment(Qt.AlignCenter)
+            registers.item(1,i).setTextAlignment(Qt.AlignCenter)
 
         #Data Cache
-        self.ui.data_cache.setColumnWidth(0,45)
-        self.ui.data_cache.setColumnWidth(1,50)
-        self.ui.data_cache.setRowCount(1)
-        self.ui.data_cache.verticalHeader().setVisible(False)
-        self.ui.data_cache.horizontalHeader().setVisible(False)
-        self.ui.data_cache.setItem(0,0, QTableWidgetItem("Addr"))
-        self.ui.data_cache.setItem(0,1, QTableWidgetItem("Value"))
-        self.ui.data_cache.item(0,0).setTextAlignment(Qt.AlignLeft)
-        self.ui.data_cache.item(0,1).setTextAlignment(Qt.AlignLeft)
-        self.ui.data_cache.item(0,0).setFont(font)
-        self.ui.data_cache.item(0,1).setFont(font)
-        self.ui.data_cache.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.data_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        data_cache = self.ui.data_cache
+        data_cache.setColumnWidth(0,45)
+        data_cache.setColumnWidth(1,50)
+        data_cache.setRowCount(1)
+        data_cache.verticalHeader().setVisible(False)
+        data_cache.horizontalHeader().setVisible(False)
+        data_cache.setItem(0,0, QTableWidgetItem("Addr"))
+        data_cache.setItem(0,1, QTableWidgetItem("Value"))
+        data_cache.item(0,0).setTextAlignment(Qt.AlignLeft)
+        data_cache.item(0,1).setTextAlignment(Qt.AlignLeft)
+        data_cache.item(0,0).setFont(font)
+        data_cache.item(0,1).setFont(font)
+        data_cache.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        data_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         #Reorder Buffer
-        self.ui.reorder_buffer.setColumnWidth(0,60)
-        self.ui.reorder_buffer.setColumnWidth(1,60)
-        self.ui.reorder_buffer.setColumnWidth(2,60)
-        self.ui.reorder_buffer.setColumnWidth(3,60)
-        self.ui.reorder_buffer.setRowCount(11)
-        self.ui.reorder_buffer.verticalHeader().setVisible(False)
-        self.ui.reorder_buffer.horizontalHeader().setVisible(False)
-        self.ui.reorder_buffer.setItem(0,0, QTableWidgetItem("Id"))
-        self.ui.reorder_buffer.setItem(0,1, QTableWidgetItem("Type"))
-        self.ui.reorder_buffer.setItem(0,2, QTableWidgetItem("Dest"))
-        self.ui.reorder_buffer.setItem(0,3, QTableWidgetItem("Value"))
-        self.ui.reorder_buffer.item(0,0).setTextAlignment(Qt.AlignCenter)
-        self.ui.reorder_buffer.item(0,1).setTextAlignment(Qt.AlignCenter)
-        self.ui.reorder_buffer.item(0,2).setTextAlignment(Qt.AlignCenter)
-        self.ui.reorder_buffer.item(0,3).setTextAlignment(Qt.AlignCenter)
-        self.ui.reorder_buffer.item(0,0).setFont(font)
-        self.ui.reorder_buffer.item(0,1).setFont(font)
-        self.ui.reorder_buffer.item(0,2).setFont(font)
-        self.ui.reorder_buffer.item(0,3).setFont(font)
-        self.ui.reorder_buffer.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.reorder_buffer.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        reorder_buffer = self.ui.reorder_buffer
+        reorder_buffer.setColumnWidth(0,60)
+        reorder_buffer.setColumnWidth(1,60)
+        reorder_buffer.setColumnWidth(2,60)
+        reorder_buffer.setColumnWidth(3,60)
+        reorder_buffer.setRowCount(11)
+        reorder_buffer.verticalHeader().setVisible(False)
+        reorder_buffer.horizontalHeader().setVisible(False)
+        reorder_buffer.setItem(0,0, QTableWidgetItem("Id"))
+        reorder_buffer.setItem(0,1, QTableWidgetItem("Type"))
+        reorder_buffer.setItem(0,2, QTableWidgetItem("Dest"))
+        reorder_buffer.setItem(0,3, QTableWidgetItem("Value"))
+        reorder_buffer.item(0,0).setTextAlignment(Qt.AlignCenter)
+        reorder_buffer.item(0,1).setTextAlignment(Qt.AlignCenter)
+        reorder_buffer.item(0,2).setTextAlignment(Qt.AlignCenter)
+        reorder_buffer.item(0,3).setTextAlignment(Qt.AlignCenter)
+        reorder_buffer.item(0,0).setFont(font)
+        reorder_buffer.item(0,1).setFont(font)
+        reorder_buffer.item(0,2).setFont(font)
+        reorder_buffer.item(0,3).setFont(font)
+        reorder_buffer.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        reorder_buffer.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for row in range(1, 11):    
             for col in range(0, 4):
-                self.ui.reorder_buffer.setItem(row,col, QTableWidgetItem("-"))
-                self.ui.reorder_buffer.item(row,col).setTextAlignment(Qt.AlignCenter)
+                reorder_buffer.setItem(row,col, QTableWidgetItem("-"))
+                reorder_buffer.item(row,col).setTextAlignment(Qt.AlignCenter)
 
         # Reservation Stations
-        self.ui.reservation.setColumnWidth(0,60)
-        self.ui.reservation.setColumnWidth(1,60)
-        self.ui.reservation.setColumnWidth(2,60)
-        self.ui.reservation.setColumnWidth(3,60)
-        self.ui.reservation.setColumnWidth(4,60)
-        self.ui.reservation.setColumnWidth(5,60)
-        self.ui.reservation.setColumnWidth(6,60)
-        self.ui.reservation.setColumnWidth(7,60)
-        self.ui.reservation.setColumnWidth(8,60)
-        self.ui.reservation.setRowCount(9)
-        self.ui.reservation.verticalHeader().setVisible(False)
-        self.ui.reservation.horizontalHeader().setVisible(False)
-        self.ui.reservation.setItem(0,0, QTableWidgetItem("Name"))
-        self.ui.reservation.setItem(0,1, QTableWidgetItem("Id"))
-        self.ui.reservation.setItem(0,2, QTableWidgetItem("Busy"))
-        self.ui.reservation.setItem(0,3, QTableWidgetItem("Op"))
-        self.ui.reservation.setItem(0,4, QTableWidgetItem("Vj"))
-        self.ui.reservation.setItem(0,5, QTableWidgetItem("Vk"))
-        self.ui.reservation.setItem(0,6, QTableWidgetItem("Qj"))
-        self.ui.reservation.setItem(0,7, QTableWidgetItem("Qk"))
-        self.ui.reservation.setItem(0,8, QTableWidgetItem("A"))
+        reservation = self.ui.reservation
+        reservation.setColumnWidth(0,60)
+        reservation.setColumnWidth(1,60)
+        reservation.setColumnWidth(2,60)
+        reservation.setColumnWidth(3,60)
+        reservation.setColumnWidth(4,60)
+        reservation.setColumnWidth(5,60)
+        reservation.setColumnWidth(6,60)
+        reservation.setColumnWidth(7,60)
+        reservation.setColumnWidth(8,60)
+        reservation.setRowCount(9)
+        reservation.verticalHeader().setVisible(False)
+        reservation.horizontalHeader().setVisible(False)
+        reservation.setItem(0,0, QTableWidgetItem("Name"))
+        reservation.setItem(0,1, QTableWidgetItem("Id"))
+        reservation.setItem(0,2, QTableWidgetItem("Busy"))
+        reservation.setItem(0,3, QTableWidgetItem("Op"))
+        reservation.setItem(0,4, QTableWidgetItem("Vj"))
+        reservation.setItem(0,5, QTableWidgetItem("Vk"))
+        reservation.setItem(0,6, QTableWidgetItem("Qj"))
+        reservation.setItem(0,7, QTableWidgetItem("Qk"))
+        reservation.setItem(0,8, QTableWidgetItem("A"))
         for i in range(0,9):
-            self.ui.reservation.item(0,i).setFont(font)
-            self.ui.reservation.item(0,i).setTextAlignment(Qt.AlignCenter)
-        self.ui.reservation.setItem(1,0, QTableWidgetItem("Branch"))
-        self.ui.reservation.setItem(2,0, QTableWidgetItem("Mult1"))
-        self.ui.reservation.setItem(3,0, QTableWidgetItem("Mult2"))
-        self.ui.reservation.setItem(4,0, QTableWidgetItem("Add1"))
-        self.ui.reservation.setItem(5,0, QTableWidgetItem("Add2"))
-        self.ui.reservation.setItem(6,0, QTableWidgetItem("Load1"))
-        self.ui.reservation.setItem(7,0, QTableWidgetItem("Load2"))
-        self.ui.reservation.setItem(8,0, QTableWidgetItem("Store"))
+            reservation.item(0,i).setFont(font)
+            reservation.item(0,i).setTextAlignment(Qt.AlignCenter)
+        reservation.setItem(1,0, QTableWidgetItem("Branch"))
+        reservation.setItem(2,0, QTableWidgetItem("Mult1"))
+        reservation.setItem(3,0, QTableWidgetItem("Mult2"))
+        reservation.setItem(4,0, QTableWidgetItem("Add1"))
+        reservation.setItem(5,0, QTableWidgetItem("Add2"))
+        reservation.setItem(6,0, QTableWidgetItem("Load1"))
+        reservation.setItem(7,0, QTableWidgetItem("Load2"))
+        reservation.setItem(8,0, QTableWidgetItem("Store"))
         for row in range(1, 9):    
             for col in range(1, 9):
-                self.ui.reservation.setItem(row,col, QTableWidgetItem("-"))
-                self.ui.reservation.item(row,col).setTextAlignment(Qt.AlignCenter)
+                reservation.setItem(row,col, QTableWidgetItem("-"))
+                reservation.item(row,col).setTextAlignment(Qt.AlignCenter)
         
-        self.ui.reservation.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.reservation.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        reservation.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        reservation.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 
         # Menu Bar        
         self.ui.choose_file.triggered.connect(self.loadFile)
 
-        # Clock Button
-        self.ui.clock_btn_plus.clicked.connect(self.clock)
+        # Clock Buttons
+        self.ui.clock_btn_plus.clicked.connect(self.clock_plus)
+        self.ui.clock_btn_minus.clicked.connect(self.clock_minus)
 
     
     def loadFile(self):
@@ -216,7 +232,7 @@ class View(QMainWindow):
             tm.load(instructions, data)
 
 
-    def clock(self):
+    def clock_plus(self):
         global loaded, queue_size, clock, pc
         if(not loaded):
             msg = QMessageBox()
@@ -231,6 +247,16 @@ class View(QMainWindow):
             clock.setText(str(tm.clock))
             pc.setText(str(tm.pc))
 
+    def clock_minus(self):
+        global loaded, queue_size, clock, pc
+        if(not loaded):
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File not Loaded")
+            msg.setInformativeText('Please load a valid .asm file')
+            msg.setWindowTitle("File not Loaded")
+            msg.exec_()
+            
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

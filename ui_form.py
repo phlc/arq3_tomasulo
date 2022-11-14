@@ -679,7 +679,9 @@ class Ui_View(object):
         item.setText(_translate("View", "Addr"))
         item = self.inst_queue.horizontalHeaderItem(1)
         item.setText(_translate("View", "Instruction"))
-        self.clock_btn_minus.setText(_translate("View", "-"))
+        self.clock_btn_minus.setText(_translate("View", "−\n"
+"MINUS SIGN\n"
+"Unicode: U+2212, UTF-8: E2 88 92"))
         self.clock_label.setText(_translate("View", "Clock "))
         self.load_file_2.setTitle(_translate("View", "Load File"))
         self.choose_file.setText(_translate("View", "Choose File"))
