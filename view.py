@@ -1,20 +1,23 @@
 # This Python file uses the following encoding: utf-8
 import sys
 from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtCore import Qt
-
-# Important:
-# You need to run the following command to generate the ui_form.py file
-#     pyside6-uic form.ui -o ui_form.py, or
-#     pyside2-uic form.ui -o ui_form.py
 from ui_form import Ui_View
+import tomasulo as tm
+
+global loaded, queue_size, clock, pc
+loaded = False
+queue_size = 6
 
 class View(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_View()
         self.ui.setupUi(self)
+
+        #Global Variable
+        global loaded, queue_size, clock, pc
 
         #Font
         font = QtGui.QFont()
@@ -27,7 +30,7 @@ class View(QMainWindow):
         self.ui.inst_cache.horizontalHeader().setVisible(False)
         self.ui.inst_cache.setRowCount(1)
         self.ui.inst_cache.setItem(0,0, QTableWidgetItem("Addr"))
-        self.ui.inst_cache.setItem(0,1, QTableWidgetItem("Instruction"))
+        self.ui.inst_cache.setItem(0,1, QTableWidgetItem(" Instruction"))
         self.ui.inst_cache.item(0,0).setTextAlignment(Qt.AlignTop)
         self.ui.inst_cache.item(0,1).setTextAlignment(Qt.AlignTop)
         self.ui.inst_cache.item(0,0).setFont(font)
@@ -39,14 +42,18 @@ class View(QMainWindow):
         self.ui.inst_queue.setColumnWidth(1,102)
         self.ui.inst_queue.verticalHeader().setVisible(False)
         self.ui.inst_queue.horizontalHeader().setVisible(False)
-        self.ui.inst_queue.setRowCount(1)
+        self.ui.inst_queue.setRowCount(queue_size+1)
         self.ui.inst_queue.setItem(0,0, QTableWidgetItem("Id"))
-        self.ui.inst_queue.setItem(0,1, QTableWidgetItem("Instruction"))
+        self.ui.inst_queue.setItem(0,1, QTableWidgetItem(" Instruction"))
         self.ui.inst_queue.item(0,0).setTextAlignment(Qt.AlignTop)
         self.ui.inst_queue.item(0,1).setTextAlignment(Qt.AlignTop)
         self.ui.inst_queue.item(0,0).setFont(font)
         self.ui.inst_queue.item(0,1).setFont(font)
         self.ui.inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.inst_queue.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        for i in range(1,7):
+            self.ui.inst_queue.setItem(i,0, QTableWidgetItem("-"))
+            self.ui.inst_queue.setItem(i,1, QTableWidgetItem("-"))
 
         #Control
         self.ui.control.setColumnWidth(0,50)
@@ -61,10 +68,12 @@ class View(QMainWindow):
         self.ui.control.item(1,0).setFont(font)
         self.ui.control.setItem(0,1, QTableWidgetItem("0"))
         self.ui.control.setItem(1,1, QTableWidgetItem("0"))
-        self.ui.control.item(0,1).setTextAlignment(Qt.AlignRight)
-        self.ui.control.item(1,1).setTextAlignment(Qt.AlignRight)
-        self.ui.control.item(0,1).setFont(font)
-        self.ui.control.item(1,1).setFont(font)
+        clock = self.ui.control.item(0,1)
+        pc = self.ui.control.item(1,1)
+        clock.setTextAlignment(Qt.AlignRight)
+        pc.setTextAlignment(Qt.AlignRight)
+        clock.setFont(font)
+        pc.setFont(font)
         self.ui.control.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.ui.control.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
@@ -158,10 +167,15 @@ class View(QMainWindow):
         # Menu Bar        
         self.ui.choose_file.triggered.connect(self.loadFile)
 
+        # Clock Button
+        self.ui.clock_btn.clicked.connect(self.clock)
+
     
     def loadFile(self):
+        global loaded
         fname = QFileDialog.getOpenFileName(self, "Load File", "", "Python Files (*.asm)")
         if fname:
+            loaded = True
             fname = fname[0]
             instructions = []
             data = []
@@ -195,6 +209,23 @@ class View(QMainWindow):
                 self.ui.data_cache.setItem(i+1,1, QTableWidgetItem(data[i]))
                 addr+=4
 
+            tm.load(instructions, data)
+
+
+    def clock(self):
+        global loaded, queue_size, clock, pc
+        if(not loaded):
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File not Loaded")
+            msg.setInformativeText('Please load a valid .asm file')
+            msg.setWindowTitle("File not Loaded")
+            msg.exec_()
+
+        else:
+            tm.run()
+            clock.setText(str(tm.clock))
+            pc.setText(str(tm.pc))
 
 
 if __name__ == "__main__":
