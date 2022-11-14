@@ -41,19 +41,19 @@ class Ui_View(object):
         self.title.setStyleSheet("")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.title.setObjectName("title")
-        self.clock_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.clock_btn.setGeometry(QtCore.QRect(1070, 710, 120, 50))
-        self.clock_btn.setStyleSheet("QPushButton#clock_btn{\n"
-"border-radius:20;\n"
-"background-color: rgb(94, 94, 94);\n"
-"color:rgb(235, 235, 235);\n"
+        self.clock_btn_plus = QtWidgets.QPushButton(self.centralwidget)
+        self.clock_btn_plus.setGeometry(QtCore.QRect(1150, 725, 21, 21))
+        self.clock_btn_plus.setStyleSheet("QPushButton#clock_btn_plus{\n"
+"border-radius: 10%;\n"
+"color: rgb(94, 94, 94);\n"
+"background-color:rgb(235, 235, 235);\n"
 "font: 700 20pt \"Arial\";\n"
 "}\n"
-"QPushButton#clock_btn:pressed{\n"
+"QPushButton#clock_btn_plus:pressed{\n"
 "border-style:solid;\n"
 "border-width:2px;\n"
 "}")
-        self.clock_btn.setObjectName("clock_btn")
+        self.clock_btn_plus.setObjectName("clock_btn_plus")
         self.inst_cache = QtWidgets.QTableWidget(self.centralwidget)
         self.inst_cache.setGeometry(QtCore.QRect(30, 100, 151, 271))
         self.inst_cache.setObjectName("inst_cache")
@@ -483,6 +483,100 @@ class Ui_View(object):
         self.line_48.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_48.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_48.setObjectName("line_48")
+        self.clock_btn_minus = QtWidgets.QPushButton(self.centralwidget)
+        self.clock_btn_minus.setGeometry(QtCore.QRect(1060, 725, 21, 21))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(20)
+        font.setBold(True)
+        font.setItalic(False)
+        self.clock_btn_minus.setFont(font)
+        self.clock_btn_minus.setStyleSheet("QPushButton#clock_btn_minus{\n"
+"border-radius: 10%;\n"
+"color: rgb(94, 94, 94);\n"
+"background-color: rgb(235, 235, 235);\n"
+"font: 700 20pt \"Arial\";\n"
+"}\n"
+"QPushButton#clock_btn_minus:pressed{\n"
+"border-style:solid;\n"
+"border-width:2px;\n"
+"}")
+        self.clock_btn_minus.setObjectName("clock_btn_minus")
+        self.clock_label = QtWidgets.QLabel(self.centralwidget)
+        self.clock_label.setGeometry(QtCore.QRect(1047, 710, 141, 51))
+        self.clock_label.setStyleSheet("border-radius: 20%;\n"
+"background-color: rgb(94, 94, 94);\n"
+"color:rgb(235, 235, 235);\n"
+"font: 700 20pt \"Arial\";")
+        self.clock_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.clock_label.setObjectName("clock_label")
+        self.clock_label.raise_()
+        self.title.raise_()
+        self.clock_btn_plus.raise_()
+        self.inst_cache.raise_()
+        self.inst_cache_t.raise_()
+        self.control_t.raise_()
+        self.control.raise_()
+        self.registers.raise_()
+        self.register_t.raise_()
+        self.reorder_buffer.raise_()
+        self.reorder_buffer_t.raise_()
+        self.line.raise_()
+        self.line_2.raise_()
+        self.line_3.raise_()
+        self.line_4.raise_()
+        self.line_5.raise_()
+        self.line_6.raise_()
+        self.line_7.raise_()
+        self.line_8.raise_()
+        self.line_9.raise_()
+        self.line_10.raise_()
+        self.line_11.raise_()
+        self.line_12.raise_()
+        self.adders.raise_()
+        self.mult.raise_()
+        self.branch.raise_()
+        self.reservation.raise_()
+        self.line_13.raise_()
+        self.line_14.raise_()
+        self.line_15.raise_()
+        self.line_17.raise_()
+        self.line_18.raise_()
+        self.line_19.raise_()
+        self.line_20.raise_()
+        self.line_21.raise_()
+        self.line_22.raise_()
+        self.line_23.raise_()
+        self.line_24.raise_()
+        self.data_cache.raise_()
+        self.data_cache_t.raise_()
+        self.line_25.raise_()
+        self.line_26.raise_()
+        self.line_27.raise_()
+        self.line_28.raise_()
+        self.line_29.raise_()
+        self.line_30.raise_()
+        self.line_31.raise_()
+        self.line_32.raise_()
+        self.line_33.raise_()
+        self.line_34.raise_()
+        self.line_35.raise_()
+        self.line_36.raise_()
+        self.line_37.raise_()
+        self.line_38.raise_()
+        self.line_39.raise_()
+        self.inst_queue_t.raise_()
+        self.inst_queue.raise_()
+        self.line_40.raise_()
+        self.line_41.raise_()
+        self.line_42.raise_()
+        self.line_43.raise_()
+        self.line_44.raise_()
+        self.line_45.raise_()
+        self.line_46.raise_()
+        self.line_47.raise_()
+        self.line_48.raise_()
+        self.clock_btn_minus.raise_()
         View.setCentralWidget(self.centralwidget)
         self.menuBar = QtWidgets.QMenuBar(View)
         self.menuBar.setGeometry(QtCore.QRect(0, 0, 1200, 24))
@@ -502,7 +596,7 @@ class Ui_View(object):
         _translate = QtCore.QCoreApplication.translate
         View.setWindowTitle(_translate("View", "View"))
         self.title.setText(_translate("View", "Tomasulo\'s Simulator"))
-        self.clock_btn.setText(_translate("View", "Clock"))
+        self.clock_btn_plus.setText(_translate("View", "+"))
         item = self.inst_cache.horizontalHeaderItem(0)
         item.setText(_translate("View", "Addr"))
         item = self.inst_cache.horizontalHeaderItem(1)
@@ -585,6 +679,8 @@ class Ui_View(object):
         item.setText(_translate("View", "Addr"))
         item = self.inst_queue.horizontalHeaderItem(1)
         item.setText(_translate("View", "Instruction"))
+        self.clock_btn_minus.setText(_translate("View", "-"))
+        self.clock_label.setText(_translate("View", "Clock "))
         self.load_file_2.setTitle(_translate("View", "Load File"))
         self.choose_file.setText(_translate("View", "Choose File"))
 

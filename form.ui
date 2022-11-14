@@ -79,29 +79,29 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="clock_btn">
+   <widget class="QPushButton" name="clock_btn_plus">
     <property name="geometry">
      <rect>
-      <x>1070</x>
-      <y>710</y>
-      <width>120</width>
-      <height>50</height>
+      <x>1150</x>
+      <y>725</y>
+      <width>21</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton#clock_btn{
-border-radius:20;
-background-color: rgb(94, 94, 94);
-color:rgb(235, 235, 235);
+     <string notr="true">QPushButton#clock_btn_plus{
+border-radius: 10%;
+color: rgb(94, 94, 94);
+background-color:rgb(235, 235, 235);
 font: 700 20pt &quot;Arial&quot;;
 }
-QPushButton#clock_btn:pressed{
+QPushButton#clock_btn_plus:pressed{
 border-style:solid;
 border-width:2px;
 }</string>
     </property>
     <property name="text">
-     <string>Clock</string>
+     <string>+</string>
     </property>
    </widget>
    <widget class="QTableWidget" name="inst_cache">
@@ -1195,6 +1195,130 @@ background-color: rgb(0, 0, 0);</string>
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="clock_btn_minus">
+    <property name="geometry">
+     <rect>
+      <x>1060</x>
+      <y>725</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>20</pointsize>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton#clock_btn_minus{
+border-radius: 10%;
+color: rgb(94, 94, 94);
+background-color: rgb(235, 235, 235);
+font: 700 20pt &quot;Arial&quot;;
+}
+QPushButton#clock_btn_minus:pressed{
+border-style:solid;
+border-width:2px;
+}</string>
+    </property>
+    <property name="text">
+     <string>−
+MINUS SIGN
+Unicode: U+2212, UTF-8: E2 88 92</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="clock_label">
+    <property name="geometry">
+     <rect>
+      <x>1047</x>
+      <y>710</y>
+      <width>141</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 20%;
+background-color: rgb(94, 94, 94);
+color:rgb(235, 235, 235);
+font: 700 20pt &quot;Arial&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Clock </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <zorder>clock_label</zorder>
+   <zorder>title</zorder>
+   <zorder>clock_btn_plus</zorder>
+   <zorder>inst_cache</zorder>
+   <zorder>inst_cache_t</zorder>
+   <zorder>control_t</zorder>
+   <zorder>control</zorder>
+   <zorder>registers</zorder>
+   <zorder>register_t</zorder>
+   <zorder>reorder_buffer</zorder>
+   <zorder>reorder_buffer_t</zorder>
+   <zorder>line</zorder>
+   <zorder>line_2</zorder>
+   <zorder>line_3</zorder>
+   <zorder>line_4</zorder>
+   <zorder>line_5</zorder>
+   <zorder>line_6</zorder>
+   <zorder>line_7</zorder>
+   <zorder>line_8</zorder>
+   <zorder>line_9</zorder>
+   <zorder>line_10</zorder>
+   <zorder>line_11</zorder>
+   <zorder>line_12</zorder>
+   <zorder>adders</zorder>
+   <zorder>mult</zorder>
+   <zorder>branch</zorder>
+   <zorder>reservation</zorder>
+   <zorder>line_13</zorder>
+   <zorder>line_14</zorder>
+   <zorder>line_15</zorder>
+   <zorder>line_17</zorder>
+   <zorder>line_18</zorder>
+   <zorder>line_19</zorder>
+   <zorder>line_20</zorder>
+   <zorder>line_21</zorder>
+   <zorder>line_22</zorder>
+   <zorder>line_23</zorder>
+   <zorder>line_24</zorder>
+   <zorder>data_cache</zorder>
+   <zorder>data_cache_t</zorder>
+   <zorder>line_25</zorder>
+   <zorder>line_26</zorder>
+   <zorder>line_27</zorder>
+   <zorder>line_28</zorder>
+   <zorder>line_29</zorder>
+   <zorder>line_30</zorder>
+   <zorder>line_31</zorder>
+   <zorder>line_32</zorder>
+   <zorder>line_33</zorder>
+   <zorder>line_34</zorder>
+   <zorder>line_35</zorder>
+   <zorder>line_36</zorder>
+   <zorder>line_37</zorder>
+   <zorder>line_38</zorder>
+   <zorder>line_39</zorder>
+   <zorder>inst_queue_t</zorder>
+   <zorder>inst_queue</zorder>
+   <zorder>line_40</zorder>
+   <zorder>line_41</zorder>
+   <zorder>line_42</zorder>
+   <zorder>line_43</zorder>
+   <zorder>line_44</zorder>
+   <zorder>line_45</zorder>
+   <zorder>line_46</zorder>
+   <zorder>line_47</zorder>
+   <zorder>line_48</zorder>
+   <zorder>clock_btn_minus</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

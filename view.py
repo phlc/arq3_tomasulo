@@ -172,7 +172,7 @@ class View(QMainWindow):
         self.ui.choose_file.triggered.connect(self.loadFile)
 
         # Clock Button
-        self.ui.clock_btn.clicked.connect(self.clock)
+        self.ui.clock_btn_plus.clicked.connect(self.clock)
 
     
     def loadFile(self):
