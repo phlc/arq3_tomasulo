@@ -110,14 +110,14 @@ class State:
 
 # Global Variables
 
-global states, actual_state, rs_names, rs_fields, rg_names
+global _states, actual_state, rs_names, rs_fields, rg_names
 actual_state = None
-states = []
+_states = []
 
 
 def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size):
-    global states, actual_state
-    states = []
+    global _states, actual_state
+    _states = []
     tmp_inst_cache = []
     tmp_data_cache = []
 
@@ -158,9 +158,18 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
     #reorder buffer
     tmp_state.reorder_buffer["size"] = reorder_buffer_size
 
-    states.append(tmp_state)
-    actual_state = states[0]
+    _states.append(tmp_state)
+    actual_state = _states[0]
 
 
-def run():
-    pass
+def run(state_count):
+    global _states, actual_state
+
+    #state already exists
+    if (state_count < len(_states)):
+        actual_state = _states[state_count]
+
+    #create new state
+    else:
+        pass
+    
