@@ -6,10 +6,16 @@ class State:
         self.pc = 0
 
         #instruction cache
-        self.instruction_cache = []
+        self.instruction_cache = {
+            "cache": [],
+            "size": 0
+        }
 
         #data cache
-        self.data_cache = []
+        self.data_cache = {
+            "cache": [],
+            "size": 0
+        }
 
         #instruction queue
         self.instruction_queue = {
@@ -40,7 +46,7 @@ class State:
 
         #Reservation Stations
         self.reservation_branch = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -50,7 +56,7 @@ class State:
             "a": True
         }
         self.reservation_mult1 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -60,7 +66,7 @@ class State:
             "a": True
         }
         self.reservation_mult2 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -70,7 +76,7 @@ class State:
             "a": True
         }
         self.reservation_add1 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -80,7 +86,7 @@ class State:
             "a": True
         }
         self.reservation_add2 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -90,7 +96,7 @@ class State:
             "a": True
         }
         self.reservation_add3 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -100,7 +106,7 @@ class State:
             "a": True
         }
         self.reservation_load1 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -110,7 +116,7 @@ class State:
             "a": True
         }
         self.reservation_load2 = {
-            "id": True,
+            "addr": True,
             "busy": True,
             "op": True,
             "vj": True,
@@ -124,28 +130,51 @@ class State:
 
 # Global Variables
 
-global states
+global states, actual_state
+actual_state = None
 states = []
 
 
-def load(fname):
-    global estates
+def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size):
+    global states, actual_state
+    states = []
+    tmp_inst_cache = []
+    tmp_data_cache = []
+
+    # Read file
     with open(fname, "r") as file:
         line = file.readline().strip('\n').strip().lower()
         while(line != ".data"):
             if(line != ""):
-                inst_cache.append(line)
+                tmp_inst_cache.append(line)
             line = file.readline().strip('\n').strip().lower()
 
         line = file.readline().strip('\n').strip().lower()
         while(line):
             if(line != ""):
-                data_cache.append(line)
+                tmp_data_cache.append(line)
             line = file.readline().strip('\n').strip().lower()
+
+    # Create First State
+    tmp_state = State()
+
+    #instruction cache
+    tmp_state.instruction_cache["cache"] = [tmp_inst_cache[i] for i in range(0, inst_cache_size)]
+    tmp_state.instruction_cache["size"] = inst_cache_size
+
+    #data cache
+    tmp_state.data_cache["cache"] = [tmp_data_cache[i] for i in range(0, data_cache_size)]
+    tmp_state.data_cache["size"] = data_cache_size
+
+    #instruction queue
+    tmp_state.instruction_queue["size"] = queue_size
+
+    #reorder buffer
+    tmp_state.reorder_buffer["size"] = reorder_buffer_size
+
+    states.append(tmp_state)
+    actual_state = states[0]
 
 
 def run():
-    global clock
-    global pc
-    clock+=1
-    pc+=4
+    pass

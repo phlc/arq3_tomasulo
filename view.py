@@ -7,14 +7,19 @@ from ui_form import Ui_View
 import tomasulo as tm
 
 # Constants
-global queue_size
-global reorder_buffer_size
+global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
 
-# Global Variables
-global loaded, inst_cache, inst_queue, registers, data_cache, reorder_buffer
+# Global Control Variables
+global loaded, clock
+
+# Global Gui Variables
+global inst_cache, inst_queue, registers, data_cache, reorder_buffer
 
 # Config
 loaded = False
+clock = 0
+inst_cache_size = 8
+data_cache_size = 8
 queue_size = 6
 reorder_buffer_size = 10
 
@@ -25,46 +30,13 @@ class View(QMainWindow):
         self.ui.setupUi(self)
 
         #Global Variable
-        global queue_size
-        global loaded, inst_cache, inst_queue, clock, pc
+        global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
+        global loaded, clock
+        global inst_cache, inst_queue, registers, data_cache, reorder_buffer
 
         #Font
         font = QtGui.QFont()
         font.setBold(True)
-
-        #Instruction Cache
-        inst_cache = self.ui.inst_cache
-        inst_cache.setColumnWidth(0,43)
-        inst_cache.setColumnWidth(1,102)
-        inst_cache.verticalHeader().setVisible(False)
-        inst_cache.horizontalHeader().setVisible(False)
-        inst_cache.setRowCount(1)
-        inst_cache.setItem(0,0, QTableWidgetItem("Addr"))
-        inst_cache.setItem(0,1, QTableWidgetItem(" Instruction"))
-        inst_cache.item(0,0).setTextAlignment(Qt.AlignTop)
-        inst_cache.item(0,1).setTextAlignment(Qt.AlignTop)
-        inst_cache.item(0,0).setFont(font)
-        inst_cache.item(0,1).setFont(font)
-        inst_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        #Instruction Queue
-        inst_queue = self.ui.inst_queue
-        inst_queue.setColumnWidth(0,43)
-        inst_queue.setColumnWidth(1,102)
-        inst_queue.verticalHeader().setVisible(False)
-        inst_queue.horizontalHeader().setVisible(False)
-        inst_queue.setRowCount(queue_size+1)
-        inst_queue.setItem(0,0, QTableWidgetItem("Addr"))
-        inst_queue.setItem(0,1, QTableWidgetItem(" Instruction"))
-        inst_queue.item(0,0).setTextAlignment(Qt.AlignTop)
-        inst_queue.item(0,1).setTextAlignment(Qt.AlignTop)
-        inst_queue.item(0,0).setFont(font)
-        inst_queue.item(0,1).setFont(font)
-        inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        inst_queue.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        for i in range(1,queue_size+1):
-            inst_queue.setItem(i,0, QTableWidgetItem(""))
-            inst_queue.setItem(i,1, QTableWidgetItem(""))
 
         #Control
         self.ui.control.setColumnWidth(0,50)
@@ -86,23 +58,30 @@ class View(QMainWindow):
         self.ui.control.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.ui.control.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        #Registers
-        registers = self.ui.registers
-        registers.verticalHeader().setVisible(False)
-        registers.horizontalHeader().setVisible(False)
-        registers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        registers.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        for i in range(0, 10):
-            registers.setItem(0,i, QTableWidgetItem(f'R{i}'))
-            registers.setItem(1,i, QTableWidgetItem(""))
-            registers.item(0,i).setTextAlignment(Qt.AlignCenter)
-            registers.item(1,i).setTextAlignment(Qt.AlignCenter)
+        #Instruction Cache
+        inst_cache = self.ui.inst_cache
+        inst_cache.setColumnWidth(0,43)
+        inst_cache.setColumnWidth(1,102)
+        inst_cache.verticalHeader().setVisible(False)
+        inst_cache.horizontalHeader().setVisible(False)
+        inst_cache.setRowCount(inst_cache_size+1)
+        inst_cache.setItem(0,0, QTableWidgetItem("Addr"))
+        inst_cache.setItem(0,1, QTableWidgetItem(" Instruction"))
+        inst_cache.item(0,0).setTextAlignment(Qt.AlignTop)
+        inst_cache.item(0,1).setTextAlignment(Qt.AlignTop)
+        inst_cache.item(0,0).setFont(font)
+        inst_cache.item(0,1).setFont(font)
+        inst_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        inst_cache.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        for i in range(1,inst_cache_size+1):
+            inst_cache.setItem(i,0, QTableWidgetItem(""))
+            inst_cache.setItem(i,1, QTableWidgetItem(""))
 
         #Data Cache
         data_cache = self.ui.data_cache
         data_cache.setColumnWidth(0,45)
         data_cache.setColumnWidth(1,50)
-        data_cache.setRowCount(1)
+        data_cache.setRowCount(data_cache_size+1)
         data_cache.verticalHeader().setVisible(False)
         data_cache.horizontalHeader().setVisible(False)
         data_cache.setItem(0,0, QTableWidgetItem("Addr"))
@@ -113,7 +92,30 @@ class View(QMainWindow):
         data_cache.item(0,1).setFont(font)
         data_cache.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         data_cache.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        for i in range(1,data_cache_size+1):
+            data_cache.setItem(i,0, QTableWidgetItem(""))
+            data_cache.setItem(i,1, QTableWidgetItem(""))
 
+        #Instruction Queue
+        inst_queue = self.ui.inst_queue
+        inst_queue.setColumnWidth(0,43)
+        inst_queue.setColumnWidth(1,102)
+        inst_queue.verticalHeader().setVisible(False)
+        inst_queue.horizontalHeader().setVisible(False)
+        inst_queue.setRowCount(queue_size+1)
+        inst_queue.setItem(0,0, QTableWidgetItem("Addr"))
+        inst_queue.setItem(0,1, QTableWidgetItem(" Instruction"))
+        inst_queue.item(0,0).setTextAlignment(Qt.AlignTop)
+        inst_queue.item(0,1).setTextAlignment(Qt.AlignTop)
+        inst_queue.item(0,0).setFont(font)
+        inst_queue.item(0,1).setFont(font)
+        inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        inst_queue.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        for i in range(1,queue_size+1):
+            inst_queue.setItem(i,0, QTableWidgetItem(""))
+            inst_queue.setItem(i,1, QTableWidgetItem(""))
+
+        
         #Reorder Buffer
         reorder_buffer = self.ui.reorder_buffer
         reorder_buffer.setColumnWidth(0,60)
@@ -141,6 +143,20 @@ class View(QMainWindow):
             for col in range(0, 4):
                 reorder_buffer.setItem(row,col, QTableWidgetItem(""))
                 reorder_buffer.item(row,col).setTextAlignment(Qt.AlignCenter)
+                
+
+        #Registers
+        registers = self.ui.registers
+        registers.verticalHeader().setVisible(False)
+        registers.horizontalHeader().setVisible(False)
+        registers.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        registers.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        for i in range(0, 10):
+            registers.setItem(0,i, QTableWidgetItem(f'R{i}'))
+            registers.setItem(1,i, QTableWidgetItem(""))
+            registers.item(0,i).setTextAlignment(Qt.AlignCenter)
+            registers.item(1,i).setTextAlignment(Qt.AlignCenter)
+
 
         # Reservation Stations
         reservation = self.ui.reservation
@@ -194,28 +210,41 @@ class View(QMainWindow):
 
     
     def loadFile(self):
-        global loaded
+        global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
+        global loaded, clock
         fname = QFileDialog.getOpenFileName(self, "Load File", "", "Python Files (*.asm)")
         if fname:
             loaded = True
+            clock = 0
             fname = fname[0]
-            tm.load(fname)
+            tm.load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size)
+            self.show_data()
+        else:
+            self.error()
 
 
     def clock_plus(self):
-        global loaded, queue_size, clock, pc
+        global loaded, clock
         if(not loaded):
             self.error()
         else:
-            pass
+            clock += 1
+            tm.run(clock)
+            self.show_data()
             
 
     def clock_minus(self):
-        global loaded, queue_size, clock, pc
+        global loaded, clock
         if(not loaded):
             self.error()
         else:
-            pass
+            if(clock > 0):
+                clock -= 1
+            tm.run(clock)
+            self.show_data()
+
+    def show_data(self):
+        pass
 
     def error(self):
         msg = QMessageBox()
