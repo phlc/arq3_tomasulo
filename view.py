@@ -8,13 +8,15 @@ import tomasulo as tm
 
 # Constants
 global queue_size
+global reorder_buffer_size
 
 # Global Variables
-global loaded, inst_cache, inst_queue, registers, data_cache, reorder_buffer, clock, pc
+global loaded, inst_cache, inst_queue, registers, data_cache, reorder_buffer
 
 # Config
 loaded = False
 queue_size = 6
+reorder_buffer_size = 10
 
 class View(QMainWindow):
     def __init__(self, parent=None):
@@ -60,9 +62,9 @@ class View(QMainWindow):
         inst_queue.item(0,1).setFont(font)
         inst_queue.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         inst_queue.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        for i in range(1,7):
-            inst_queue.setItem(i,0, QTableWidgetItem("-"))
-            inst_queue.setItem(i,1, QTableWidgetItem("-"))
+        for i in range(1,queue_size+1):
+            inst_queue.setItem(i,0, QTableWidgetItem(""))
+            inst_queue.setItem(i,1, QTableWidgetItem(""))
 
         #Control
         self.ui.control.setColumnWidth(0,50)
@@ -74,8 +76,8 @@ class View(QMainWindow):
         self.ui.control.item(0,0).setFont(font)
         self.ui.control.item(1,0).setFont(font)
 
-        self.ui.control.setItem(0,1, QTableWidgetItem("0"))
-        self.ui.control.setItem(1,1, QTableWidgetItem("0"))
+        self.ui.control.setItem(0,1, QTableWidgetItem(""))
+        self.ui.control.setItem(1,1, QTableWidgetItem(""))
         clock = self.ui.control.item(0,1)
         pc = self.ui.control.item(1,1)
         
@@ -92,7 +94,7 @@ class View(QMainWindow):
         registers.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for i in range(0, 10):
             registers.setItem(0,i, QTableWidgetItem(f'R{i}'))
-            registers.setItem(1,i, QTableWidgetItem("-"))
+            registers.setItem(1,i, QTableWidgetItem(""))
             registers.item(0,i).setTextAlignment(Qt.AlignCenter)
             registers.item(1,i).setTextAlignment(Qt.AlignCenter)
 
@@ -118,7 +120,7 @@ class View(QMainWindow):
         reorder_buffer.setColumnWidth(1,60)
         reorder_buffer.setColumnWidth(2,60)
         reorder_buffer.setColumnWidth(3,60)
-        reorder_buffer.setRowCount(11)
+        reorder_buffer.setRowCount(reorder_buffer_size + 1)
         reorder_buffer.verticalHeader().setVisible(False)
         reorder_buffer.horizontalHeader().setVisible(False)
         reorder_buffer.setItem(0,0, QTableWidgetItem("Id"))
@@ -135,9 +137,9 @@ class View(QMainWindow):
         reorder_buffer.item(0,3).setFont(font)
         reorder_buffer.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         reorder_buffer.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        for row in range(1, 11):    
+        for row in range(1, reorder_buffer_size+1):    
             for col in range(0, 4):
-                reorder_buffer.setItem(row,col, QTableWidgetItem("-"))
+                reorder_buffer.setItem(row,col, QTableWidgetItem(""))
                 reorder_buffer.item(row,col).setTextAlignment(Qt.AlignCenter)
 
         # Reservation Stations
@@ -176,7 +178,7 @@ class View(QMainWindow):
         reservation.setItem(8,0, QTableWidgetItem("Store"))
         for row in range(1, 9):    
             for col in range(1, 9):
-                reservation.setItem(row,col, QTableWidgetItem("-"))
+                reservation.setItem(row,col, QTableWidgetItem(""))
                 reservation.item(row,col).setTextAlignment(Qt.AlignCenter)
         
         reservation.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -197,65 +199,31 @@ class View(QMainWindow):
         if fname:
             loaded = True
             fname = fname[0]
-            instructions = []
-            data = []
-            with open(fname, "r") as file:
-                line = file.readline().strip('\n').strip().lower()
-                while(line != ".data"):
-                    if(line != ""):
-                        instructions.append(line)
-                    line = file.readline().strip('\n').strip().lower()
-
-                line = file.readline().strip('\n').strip().lower()
-                while(line):
-                    if(line != ""):
-                        data.append(line)
-                    line = file.readline().strip('\n').strip().lower()
-
-
-            addr = 0
-            for i in range(0,len(instructions)):
-                self.ui.inst_cache.insertRow(i+1)
-                self.ui.inst_cache.setItem(i+1,0, QTableWidgetItem(str(addr)))
-                self.ui.inst_cache.setItem(i+1,1, QTableWidgetItem(instructions[i]))
-                addr+=4
-            self.ui.inst_cache.item(1,0).setBackground(QtGui.QBrush(QtGui.QColor(255, 0, 0)))
-
-
-            addr = 0
-            for i in range(0,len(data)):
-                self.ui.data_cache.insertRow(i+1)
-                self.ui.data_cache.setItem(i+1,0, QTableWidgetItem(str(addr)))
-                self.ui.data_cache.setItem(i+1,1, QTableWidgetItem(data[i]))
-                addr+=4
-
-            tm.load(instructions, data)
+            tm.load(fname)
 
 
     def clock_plus(self):
         global loaded, queue_size, clock, pc
         if(not loaded):
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-            msg.setText("File not Loaded")
-            msg.setInformativeText('Please load a valid .asm file')
-            msg.setWindowTitle("File not Loaded")
-            msg.exec_()
-
+            self.error()
         else:
-            tm.run()
-            clock.setText(str(tm.clock))
-            pc.setText(str(tm.pc))
+            pass
+            
 
     def clock_minus(self):
         global loaded, queue_size, clock, pc
         if(not loaded):
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-            msg.setText("File not Loaded")
-            msg.setInformativeText('Please load a valid .asm file')
-            msg.setWindowTitle("File not Loaded")
-            msg.exec_()
+            self.error()
+        else:
+            pass
+
+    def error(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("File not Loaded")
+        msg.setInformativeText('Please load a valid .asm file')
+        msg.setWindowTitle("File not Loaded")
+        msg.exec_()
             
 
 if __name__ == "__main__":

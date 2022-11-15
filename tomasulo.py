@@ -6,11 +6,21 @@ clock = 0
 pc = 0
 
 
-def load(instructions, data):
+def load(fname):
     global inst_cache
     global data_cache
-    inst_cache =  instructions
-    data_cache = data
+    with open(fname, "r") as file:
+        line = file.readline().strip('\n').strip().lower()
+        while(line != ".data"):
+            if(line != ""):
+                inst_cache.append(line)
+            line = file.readline().strip('\n').strip().lower()
+
+        line = file.readline().strip('\n').strip().lower()
+        while(line):
+            if(line != ""):
+                data_cache.append(line)
+            line = file.readline().strip('\n').strip().lower()
 
 
 def run():

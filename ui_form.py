@@ -14,9 +14,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_View(object):
     def setupUi(self, View):
         View.setObjectName("View")
-        View.resize(1200, 824)
-        View.setMinimumSize(QtCore.QSize(1200, 800))
-        View.setMaximumSize(QtCore.QSize(1200, 824))
+        View.resize(1220, 824)
+        View.setMinimumSize(QtCore.QSize(1220, 800))
+        View.setMaximumSize(QtCore.QSize(1220, 824))
         View.setStyleSheet("QWidget#centralwidget{\n"
 "background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(66, 66, 66, 255), stop:1 rgba(255, 255, 255, 255))\n"
 "}")
@@ -27,8 +27,8 @@ class Ui_View(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
-        self.centralwidget.setMinimumSize(QtCore.QSize(1200, 800))
-        self.centralwidget.setMaximumSize(QtCore.QSize(1200, 800))
+        self.centralwidget.setMinimumSize(QtCore.QSize(1220, 800))
+        self.centralwidget.setMaximumSize(QtCore.QSize(1220, 800))
         self.centralwidget.setObjectName("centralwidget")
         self.title = QtWidgets.QLabel(self.centralwidget)
         self.title.setGeometry(QtCore.QRect(330, 20, 540, 42))
@@ -42,7 +42,7 @@ class Ui_View(object):
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.title.setObjectName("title")
         self.clock_btn_plus = QtWidgets.QPushButton(self.centralwidget)
-        self.clock_btn_plus.setGeometry(QtCore.QRect(1150, 725, 21, 21))
+        self.clock_btn_plus.setGeometry(QtCore.QRect(1154, 720, 21, 21))
         self.clock_btn_plus.setStyleSheet("QPushButton#clock_btn_plus{\n"
 "border-radius: 10%;\n"
 "color: rgb(94, 94, 94);\n"
@@ -75,7 +75,7 @@ class Ui_View(object):
         self.inst_cache_t.setAlignment(QtCore.Qt.AlignCenter)
         self.inst_cache_t.setObjectName("inst_cache_t")
         self.control_t = QtWidgets.QLabel(self.centralwidget)
-        self.control_t.setGeometry(QtCore.QRect(980, 80, 141, 21))
+        self.control_t.setGeometry(QtCore.QRect(1000, 80, 141, 21))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(14)
@@ -86,7 +86,7 @@ class Ui_View(object):
         self.control_t.setAlignment(QtCore.Qt.AlignCenter)
         self.control_t.setObjectName("control_t")
         self.control = QtWidgets.QTableWidget(self.centralwidget)
-        self.control.setGeometry(QtCore.QRect(1000, 110, 111, 61))
+        self.control.setGeometry(QtCore.QRect(1020, 110, 111, 61))
         self.control.setObjectName("control")
         self.control.setColumnCount(2)
         self.control.setRowCount(2)
@@ -144,7 +144,7 @@ class Ui_View(object):
         self.register_t.setStyleSheet("")
         self.register_t.setObjectName("register_t")
         self.reorder_buffer = QtWidgets.QTableWidget(self.centralwidget)
-        self.reorder_buffer.setGeometry(QtCore.QRect(940, 290, 241, 341))
+        self.reorder_buffer.setGeometry(QtCore.QRect(950, 290, 241, 341))
         self.reorder_buffer.setObjectName("reorder_buffer")
         self.reorder_buffer.setColumnCount(4)
         self.reorder_buffer.setRowCount(0)
@@ -157,7 +157,7 @@ class Ui_View(object):
         item = QtWidgets.QTableWidgetItem()
         self.reorder_buffer.setHorizontalHeaderItem(3, item)
         self.reorder_buffer_t = QtWidgets.QLabel(self.centralwidget)
-        self.reorder_buffer_t.setGeometry(QtCore.QRect(990, 260, 141, 21))
+        self.reorder_buffer_t.setGeometry(QtCore.QRect(1000, 260, 141, 21))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(14)
@@ -469,7 +469,7 @@ class Ui_View(object):
         self.line_45.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_45.setObjectName("line_45")
         self.line_46 = QtWidgets.QFrame(self.centralwidget)
-        self.line_46.setGeometry(QtCore.QRect(180, 140, 821, 20))
+        self.line_46.setGeometry(QtCore.QRect(180, 140, 841, 20))
         self.line_46.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_46.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_46.setObjectName("line_46")
@@ -484,7 +484,7 @@ class Ui_View(object):
         self.line_48.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_48.setObjectName("line_48")
         self.clock_btn_minus = QtWidgets.QPushButton(self.centralwidget)
-        self.clock_btn_minus.setGeometry(QtCore.QRect(1060, 725, 21, 21))
+        self.clock_btn_minus.setGeometry(QtCore.QRect(1060, 720, 21, 21))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(20)
@@ -503,8 +503,8 @@ class Ui_View(object):
 "}")
         self.clock_btn_minus.setObjectName("clock_btn_minus")
         self.clock_label = QtWidgets.QLabel(self.centralwidget)
-        self.clock_label.setGeometry(QtCore.QRect(1047, 710, 141, 51))
-        self.clock_label.setStyleSheet("border-radius: 20%;\n"
+        self.clock_label.setGeometry(QtCore.QRect(1047, 705, 141, 51))
+        self.clock_label.setStyleSheet("border-radius: 25%;\n"
 "background-color: rgb(94, 94, 94);\n"
 "color:rgb(235, 235, 235);\n"
 "font: 700 20pt \"Arial\";")
@@ -579,7 +579,7 @@ class Ui_View(object):
         self.clock_btn_minus.raise_()
         View.setCentralWidget(self.centralwidget)
         self.menuBar = QtWidgets.QMenuBar(View)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1200, 24))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1220, 24))
         self.menuBar.setObjectName("menuBar")
         self.load_file_2 = QtWidgets.QMenu(self.menuBar)
         self.load_file_2.setObjectName("load_file_2")
@@ -682,7 +682,7 @@ class Ui_View(object):
         self.clock_btn_minus.setText(_translate("View", "−\n"
 "MINUS SIGN\n"
 "Unicode: U+2212, UTF-8: E2 88 92"))
-        self.clock_label.setText(_translate("View", "Clock "))
+        self.clock_label.setText(_translate("View", " Clock "))
         self.load_file_2.setTitle(_translate("View", "Load File"))
         self.choose_file.setText(_translate("View", "Choose File"))
 

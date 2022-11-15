@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
+    <width>1220</width>
     <height>824</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1200</width>
+    <width>1220</width>
     <height>800</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1200</width>
+    <width>1220</width>
     <height>824</height>
    </size>
   </property>
@@ -42,13 +42,13 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba
    </property>
    <property name="minimumSize">
     <size>
-     <width>1200</width>
+     <width>1220</width>
      <height>800</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>1200</width>
+     <width>1220</width>
      <height>800</height>
     </size>
    </property>
@@ -82,8 +82,8 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba
    <widget class="QPushButton" name="clock_btn_plus">
     <property name="geometry">
      <rect>
-      <x>1150</x>
-      <y>725</y>
+      <x>1154</x>
+      <y>720</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -154,7 +154,7 @@ border-width:2px;
    <widget class="QLabel" name="control_t">
     <property name="geometry">
      <rect>
-      <x>980</x>
+      <x>1000</x>
       <y>80</y>
       <width>141</width>
       <height>21</height>
@@ -181,7 +181,7 @@ border-width:2px;
    <widget class="QTableWidget" name="control">
     <property name="geometry">
      <rect>
-      <x>1000</x>
+      <x>1020</x>
       <y>110</y>
       <width>111</width>
       <height>61</height>
@@ -321,7 +321,7 @@ border-width:2px;
    <widget class="QTableWidget" name="reorder_buffer">
     <property name="geometry">
      <rect>
-      <x>940</x>
+      <x>950</x>
       <y>290</y>
       <width>241</width>
       <height>341</height>
@@ -351,7 +351,7 @@ border-width:2px;
    <widget class="QLabel" name="reorder_buffer_t">
     <property name="geometry">
      <rect>
-      <x>990</x>
+      <x>1000</x>
       <y>260</y>
       <width>141</width>
       <height>21</height>
@@ -1161,7 +1161,7 @@ background-color: rgb(0, 0, 0);</string>
      <rect>
       <x>180</x>
       <y>140</y>
-      <width>821</width>
+      <width>841</width>
       <height>20</height>
      </rect>
     </property>
@@ -1199,7 +1199,7 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>1060</x>
-      <y>725</y>
+      <y>720</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -1234,19 +1234,19 @@ Unicode: U+2212, UTF-8: E2 88 92</string>
     <property name="geometry">
      <rect>
       <x>1047</x>
-      <y>710</y>
+      <y>705</y>
       <width>141</width>
       <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius: 20%;
+     <string notr="true">border-radius: 25%;
 background-color: rgb(94, 94, 94);
 color:rgb(235, 235, 235);
 font: 700 20pt &quot;Arial&quot;;</string>
     </property>
     <property name="text">
-     <string>Clock </string>
+     <string> Clock </string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1325,7 +1325,7 @@ font: 700 20pt &quot;Arial&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1200</width>
+     <width>1220</width>
      <height>24</height>
     </rect>
    </property>
