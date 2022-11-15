@@ -1,6 +1,9 @@
 
 class State:
     def __init__(self):
+        #global constants
+        global rs_names, rs_fields, rg_names
+
         #control
         self.clock = 0
         self.pc = 0
@@ -30,107 +33,22 @@ class State:
         }
 
         #registers
-        self.registers = {
-            "r0": True,
-            "r1": True,
-            "r2": True,
-            "r3": True,
-            "r4": True,
-            "r5": True,
-            "r6": True,
-            "r7": True,
-            "r8": True,
-            "r9": True,
-        }
+        self.registers = {}
+        for name in rg_names:
+            self.registers[name] = True
 
 
         #Reservation Stations
-        self.reservation_branch = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_mult1 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_mult2 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_add1 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_add2 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_add3 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_load1 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
-        self.reservation_load2 = {
-            "addr": True,
-            "busy": True,
-            "op": True,
-            "vj": True,
-            "vk": True,
-            "qj": True,
-            "qk": True,
-            "a": True
-        }
+        self.reservation = {}
+        for name in rs_names:
+            self.reservation[name] = {}
+            for field in rs_fields:
+                self.reservation[name][field] = True
 
-        
 
 # Global Variables
 
-global states, actual_state
+global states, actual_state, rs_names, rs_fields, rg_names
 actual_state = None
 states = []
 

@@ -7,7 +7,8 @@ from ui_form import Ui_View
 import tomasulo as tm
 
 # Constants
-global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
+global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size 
+global rs_names, rs_fields, rg_names
 
 # Global Control Variables
 global loaded, state_count
@@ -22,6 +23,13 @@ inst_cache_size = 8
 data_cache_size = 8
 queue_size = 6
 reorder_buffer_size = 10
+rs_names = ["branch", "mult1", "mult2", "add1", "add2", "add3", "load1", "load2"]
+rs_fields = ["addr", "busy", "op", "vj", "vk", "qj", "qk", "a"]
+rg_names = ["r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"]
+tm.rs_names = rs_names
+tm.rs_fields = rs_fields
+tm.rg_names = rg_names
+
 
 class View(QMainWindow):
     def __init__(self, parent=None):
@@ -29,8 +37,9 @@ class View(QMainWindow):
         self.ui = Ui_View()
         self.ui.setupUi(self)
 
-        #global onstants
+        #global constants
         global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
+
         #global variables
         global loaded, state_count
         #globa gui variables
@@ -213,6 +222,7 @@ class View(QMainWindow):
     
     def loadFile(self):
         global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
+
         global loaded, state_count
         fname = QFileDialog.getOpenFileName(self, "Load File", "", "Python Files (*.asm)")
         if fname:
@@ -268,13 +278,55 @@ class View(QMainWindow):
         i = 0
         while(i < len(tm.actual_state.data_cache["cache"])):
             data_cache.item(i+1,0).setText(str(i*4))
-            data_cache.item(i,1).setText(tm.actual_state.data_cache["cache"][i])
+            data_cache.item(i+1,1).setText(tm.actual_state.data_cache["cache"][i])
             i+=1
         while(i < tm.actual_state.data_cache["size"]):
             data_cache.item(i+1,0).setText(str(i*4))
             data_cache.item(i+1,1).setText("-")
             i+=1
 
+        #instruction queue
+        i = 0
+        while(i < len(tm.actual_state.instruction_queue["queue"])):
+            inst_queue.item(i+1,0).setText(tm.actual_state.instruction_queue["queue"][i]["addr"])
+            inst_queue.item(i+1,1).setText(tm.actual_state.instruction_queue["queue"][i]["inst"])
+            i+=1
+        while(i < tm.actual_state.instruction_queue["size"]):
+            inst_queue.item(i+1,0).setText("-")
+            inst_queue.item(i+1,1).setText("-")
+            i+=1
+
+        #reorder buffer
+        i = 0
+        while(i < len(tm.actual_state.reorder_buffer["buffer"])):
+            reorder_buffer.item(i+1,0).setText(tm.actual_state.reorder_buffer["buffer"][i]["addr"])
+            reorder_buffer.item(i+1,1).setText(tm.actual_state.reorder_buffer["buffer"][i]["type"])
+            reorder_buffer.item(i+1,2).setText(tm.actual_state.reorder_buffer["buffer"][i]["dest"])
+            reorder_buffer.item(i+1,3).setText(tm.actual_state.reorder_buffer["buffer"][i]["value"])
+            i+=1
+        while(i < tm.actual_state.reorder_buffer["size"]):
+            reorder_buffer.item(i+1,0).setText("-")
+            reorder_buffer.item(i+1,1).setText("-")
+            reorder_buffer.item(i+1,2).setText("-")
+            reorder_buffer.item(i+1,3).setText("-")
+            i+=1
+
+
+        #registers
+        for i, name in zip(range(0, 10), rg_names):
+                if(isinstance(tm.actual_state.registers[name], bool)):
+                    registers.item(1,i).setText("-")
+                else:
+                    registers.item(1,i).setText(str(tm.actual_state.registers[name]))
+
+        #reservation stations
+        for i, name in zip(range(1, 9), rs_names):
+            for j, field in zip(range(1, 9), rs_fields):
+                if(isinstance(tm.actual_state.reservation[name][field], bool)):
+                    reservation.item(i,j).setText("-")
+                else:
+                    reservation.item(i,j).setText(str(tm.actual_state.reservation[name][field]))
+            
 
     def error(self):
         msg = QMessageBox()
