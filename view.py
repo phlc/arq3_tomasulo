@@ -10,14 +10,14 @@ import tomasulo as tm
 global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
 
 # Global Control Variables
-global loaded, clock
+global loaded, state_count
 
 # Global Gui Variables
-global inst_cache, inst_queue, registers, data_cache, reorder_buffer
+global clock, pc, inst_cache, data_cache, inst_queue, registers, reorder_buffer
 
 # Config
 loaded = False
-clock = 0
+state_count = 0
 inst_cache_size = 8
 data_cache_size = 8
 queue_size = 6
@@ -29,10 +29,12 @@ class View(QMainWindow):
         self.ui = Ui_View()
         self.ui.setupUi(self)
 
-        #Global Variable
+        #global onstants
         global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
-        global loaded, clock
-        global inst_cache, inst_queue, registers, data_cache, reorder_buffer
+        #global variables
+        global loaded, state_count
+        #globa gui variables
+        global clock, pc, inst_cache, data_cache, inst_queue, reorder_buffer, registers, reservation
 
         #Font
         font = QtGui.QFont()
@@ -211,11 +213,11 @@ class View(QMainWindow):
     
     def loadFile(self):
         global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
-        global loaded, clock
+        global loaded, state_count
         fname = QFileDialog.getOpenFileName(self, "Load File", "", "Python Files (*.asm)")
         if fname:
             loaded = True
-            clock = 0
+            state_count = 0
             fname = fname[0]
             tm.load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size)
             self.show_data()
@@ -224,27 +226,55 @@ class View(QMainWindow):
 
 
     def clock_plus(self):
-        global loaded, clock
+        global loaded, state_count
         if(not loaded):
             self.error()
         else:
-            clock += 1
-            tm.run(clock)
+            state_count += 1
+            tm.run(state_count)
             self.show_data()
             
 
     def clock_minus(self):
-        global loaded, clock
+        global loaded, state_count
         if(not loaded):
             self.error()
         else:
-            if(clock > 0):
-                clock -= 1
-            tm.run(clock)
+            if(state_count > 0):
+                state_count -= 1
+            tm.run(state_count)
             self.show_data()
 
     def show_data(self):
-        pass
+        global clock, pc, inst_cache, data_cache, inst_queue, reorder_buffer, registers, reservation
+
+        #control
+        clock.setText(str(tm.actual_state.clock))
+        pc.setText(str(tm.actual_state.pc))
+        inst_cache.item(1,tm.actual_state.pc).setBackground(QtGui.QBrush(QtGui.QColor("red")))
+
+        #instruction cache
+        i = 0
+        while(i < len(tm.actual_state.instruction_cache["cache"])):
+            inst_cache.item(i+1,0).setText(str(i*4))
+            inst_cache.item(i+1,1).setText(tm.actual_state.instruction_cache["cache"][i])
+            i+=1
+        while(i < tm.actual_state.instruction_cache["size"]):
+            inst_cache.item(i+1,0).setText(str(i*4))
+            inst_cache.item(i+1,1).setText("-")
+            i+=1
+
+        #data cache
+        i = 0
+        while(i < len(tm.actual_state.data_cache["cache"])):
+            data_cache.item(i+1,0).setText(str(i*4))
+            data_cache.item(i,1).setText(tm.actual_state.data_cache["cache"][i])
+            i+=1
+        while(i < tm.actual_state.data_cache["size"]):
+            data_cache.item(i+1,0).setText(str(i*4))
+            data_cache.item(i+1,1).setText("-")
+            i+=1
+
 
     def error(self):
         msg = QMessageBox()

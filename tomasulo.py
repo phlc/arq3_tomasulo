@@ -159,11 +159,17 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
     tmp_state = State()
 
     #instruction cache
-    tmp_state.instruction_cache["cache"] = [tmp_inst_cache[i] for i in range(0, inst_cache_size)]
+    i = 0
+    while(i < inst_cache_size and i < len(tmp_inst_cache)):
+        tmp_state.instruction_cache["cache"].append(tmp_inst_cache[i])
+        i+=1
     tmp_state.instruction_cache["size"] = inst_cache_size
 
     #data cache
-    tmp_state.data_cache["cache"] = [tmp_data_cache[i] for i in range(0, data_cache_size)]
+    i = 0
+    while(i < data_cache_size and i < len(tmp_data_cache)):
+        tmp_state.data_cache["cache"].append(tmp_data_cache[i])
+        i+=1
     tmp_state.data_cache["size"] = data_cache_size
 
     #instruction queue
