@@ -267,7 +267,7 @@ class View(QMainWindow):
         i = 0
         while(i < len(tm.actual_state.instruction_cache["cache"])):
             inst_cache.item(i+1,0).setText(str(i*4))
-            inst_cache.item(i+1,1).setText(tm.actual_state.instruction_cache["cache"][i])
+            inst_cache.item(i+1,1).setText(str(tm.actual_state.instruction_cache["cache"][i]))
             i+=1
         while(i < tm.actual_state.instruction_cache["size"]):
             inst_cache.item(i+1,0).setText(str(i*4))

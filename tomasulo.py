@@ -45,6 +45,68 @@ class State:
             for field in rs_fields:
                 self.reservation[name][field] = True
 
+    def copy(self):
+        #global constants
+        global rs_names, rs_fields, rg_names
+
+        #create copy
+        cp = State()
+        
+        #control
+        cp.copy = self.clock
+        cp. pc = self.pc
+
+        #instruction cache
+        cp.instruction_cache["size"] = self.instruction_cache["size"]
+        for item in self.instruction_cache["cache"]:
+            cp.instruction_cache["cache"].append(item)
+
+        #data cache
+        cp.data_cache["size"] = self.data_cache["size"]
+        for item in self.data_cache["cache"]:
+            cp.data_cache["cache"].append(item)
+
+        #instruction queue
+        cp.instruction_queue["size"] = self.instruction_queue["size"]
+        i = 0
+        for item in self.instruction_queue["queue"]:
+            cp.instruction_queue["queue"].append(
+                {"addr": item["addr"],
+                "inst": item["inst"]}
+            )
+            i+=1
+
+        #reorder buffer
+        self.reorder_buffer = {
+            "buffer": [],
+            "size": 0
+        }
+
+        #reorder buffer
+        cp.reorder_buffer["size"]  = self.reorder_buffer["size"]
+        i = 0
+        for item in self.reorder_buffer["buffer"]:
+            cp.reorder_buffer["buffer"].append(
+                {"addr": item["addr"],
+                "type": item["type"],
+                "dest": item["dest"]
+                "value": item["value"]}
+            )
+            i+=1
+
+        #registers
+        for name in rg_names:
+            cp.registers[name] = self.registers[name]
+
+        #Reservation Stations
+        for name in rs_names:
+            cp.reservation[name] = {}
+            for field in rs_fields:
+                cp.reservation[name][field] = self.reservation[name][field]
+
+        return cp
+
+
 
 # Global Variables
 
@@ -70,7 +132,7 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
         line = file.readline().strip('\n').strip().lower()
         while(line):
             if(line != ""):
-                tmp_data_cache.append(line)
+                tmp_data_cache.append(int(line))
             line = file.readline().strip('\n').strip().lower()
 
     # Create First State
