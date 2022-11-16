@@ -46,7 +46,7 @@ class State:
             for field in rs_fields:
                 self.reservation[name][field] = True
 
-    def copy(self):
+    def clone(self):
         #global constants
         global rs_names, rs_fields, rg_names
 
@@ -54,8 +54,8 @@ class State:
         cp = State()
         
         #control
-        cp.copy = self.clock
-        cp. pc = self.pc
+        cp.clock = self.clock
+        cp.pc = self.pc
 
         #instruction cache
         cp.instruction_cache["size"] = self.instruction_cache["size"]
@@ -118,6 +118,7 @@ _states = []
 
 def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size):
     global _states, actual_state
+    actual_state = None
     _states = []
     tmp_inst_cache = []
     tmp_data_cache = []
@@ -172,5 +173,17 @@ def run(state_count):
 
     #create new state
     else:
-        pass
-    
+        #create new clone state
+        new_state = actual_state.clone()
+        
+        new_state.clock += 1
+        print(new_state.clock)
+        new_state.pc += 4 # !!!!!!! mudar pro final
+
+        new_state.registers["r1"] = new_state.clock
+
+        _states.append(new_state)
+        actual_state = _states[state_count]
+
+        #fetch instruction from cache to queue
+        

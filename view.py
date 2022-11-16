@@ -232,34 +232,13 @@ class View(QMainWindow):
         else:
             self.error()
 
-
-    def clock_plus(self):
-        global loaded, state_count
-        if(not loaded):
-            self.error()
-        else:
-            state_count += 1
-            tm.run(state_count)
-            self.show_data()
-            
-
-    def clock_minus(self):
-        global loaded, state_count
-        if(not loaded):
-            self.error()
-        else:
-            if(state_count > 0):
-                state_count -= 1
-            tm.run(state_count)
-            self.show_data()
-
     def show_data(self):
         global clock, pc, inst_cache, data_cache, inst_queue, reorder_buffer, registers, reservation
 
         #control
         clock.setText(str(tm.actual_state.clock))
         pc.setText(str(tm.actual_state.pc))
-        inst_cache.item(1,tm.actual_state.pc).setBackground(QtGui.QBrush(QtGui.QColor("red")))
+        
 
         #instruction cache
         i = 0
@@ -271,6 +250,10 @@ class View(QMainWindow):
             inst_cache.item(i+1,0).setText(str(i*4))
             inst_cache.item(i+1,1).setText("-")
             i+=1
+
+        for i in range(1, inst_cache_size):
+            inst_cache.item(i, 0).setBackground(QtGui.QBrush(QtGui.QColor("transparent")))
+        inst_cache.item(tm.actual_state.pc//4 + 1, 0).setBackground(QtGui.QBrush(QtGui.QColor("red")))
 
         #data cache
         i = 0
@@ -325,6 +308,26 @@ class View(QMainWindow):
                 else:
                     reservation.item(i,j).setText(str(tm.actual_state.reservation[name][field]))
             
+
+    def clock_plus(self):
+        global loaded, state_count
+        if(not loaded):
+            self.error()
+        else:
+            state_count += 1
+            tm.run(state_count)
+            self.show_data()
+            
+
+    def clock_minus(self):
+        global loaded, state_count
+        if(not loaded):
+            self.error()
+        else:
+            if(state_count > 0):
+                state_count -= 1
+            tm.run(state_count)
+            self.show_data()
 
     def error(self):
         msg = QMessageBox()
