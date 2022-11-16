@@ -36,6 +36,7 @@ class State:
         self.registers = {}
         for name in rg_names:
             self.registers[name] = True
+        self.registers["r0"] = 0
 
 
         #Reservation Stations
@@ -89,7 +90,7 @@ class State:
             cp.reorder_buffer["buffer"].append(
                 {"addr": item["addr"],
                 "type": item["type"],
-                "dest": item["dest"]
+                "dest": item["dest"],
                 "value": item["value"]}
             )
             i+=1

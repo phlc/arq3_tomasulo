@@ -23,7 +23,7 @@ inst_cache_size = 8
 data_cache_size = 8
 queue_size = 6
 reorder_buffer_size = 10
-rs_names = ["branch", "mult1", "mult2", "add1", "add2", "add3", "load1", "load2"]
+rs_names = ["store", "branch", "mult1", "mult2", "add1", "add2", "load1", "load2"]
 rs_fields = ["addr", "busy", "op", "vj", "vk", "qj", "qk", "a"]
 rg_names = ["r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"]
 tm.rs_names = rs_names
@@ -195,14 +195,12 @@ class View(QMainWindow):
         for i in range(0,9):
             reservation.item(0,i).setFont(font)
             reservation.item(0,i).setTextAlignment(Qt.AlignCenter)
-        reservation.setItem(1,0, QTableWidgetItem("Branch"))
-        reservation.setItem(2,0, QTableWidgetItem("Mult1"))
-        reservation.setItem(3,0, QTableWidgetItem("Mult2"))
-        reservation.setItem(4,0, QTableWidgetItem("Add1"))
-        reservation.setItem(5,0, QTableWidgetItem("Add2"))
-        reservation.setItem(6,0, QTableWidgetItem("Add3"))
-        reservation.setItem(7,0, QTableWidgetItem("Load1"))
-        reservation.setItem(8,0, QTableWidgetItem("Load2"))
+
+        i = 1
+        for name in rs_names:
+            reservation.setItem(i,0, QTableWidgetItem(name))
+            i+=1
+
         for row in range(1, 9):    
             for col in range(1, 9):
                 reservation.setItem(row,col, QTableWidgetItem(""))
@@ -278,7 +276,7 @@ class View(QMainWindow):
         i = 0
         while(i < len(tm.actual_state.data_cache["cache"])):
             data_cache.item(i+1,0).setText(str(i*4))
-            data_cache.item(i+1,1).setText(tm.actual_state.data_cache["cache"][i])
+            data_cache.item(i+1,1).setText(str(tm.actual_state.data_cache["cache"][i]))
             i+=1
         while(i < tm.actual_state.data_cache["size"]):
             data_cache.item(i+1,0).setText(str(i*4))
