@@ -269,12 +269,12 @@ class View(QMainWindow):
         #instruction queue
         i = 0
         while(i < len(tm.actual_state.instruction_queue["queue"])):
-            inst_queue.item(i+1,0).setText(tm.actual_state.instruction_queue["queue"][i]["addr"])
-            inst_queue.item(i+1,1).setText(tm.actual_state.instruction_queue["queue"][i]["inst"])
+            inst_queue.item(queue_size - i,0).setText(str(tm.actual_state.instruction_queue["queue"][i]["addr"]))
+            inst_queue.item(queue_size - i,1).setText(tm.actual_state.instruction_queue["queue"][i]["inst"])
             i+=1
         while(i < tm.actual_state.instruction_queue["size"]):
-            inst_queue.item(i+1,0).setText("-")
-            inst_queue.item(i+1,1).setText("-")
+            inst_queue.item(queue_size - i,0).setText("-")
+            inst_queue.item(queue_size - i,1).setText("-")
             i+=1
 
         #reorder buffer

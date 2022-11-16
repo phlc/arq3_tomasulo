@@ -175,15 +175,22 @@ def run(state_count):
     else:
         #create new clone state
         new_state = actual_state.clone()
-        
+
+        #update clock
         new_state.clock += 1
-        print(new_state.clock)
-        new_state.pc += 4 # !!!!!!! mudar pro final
 
-        new_state.registers["r1"] = new_state.clock
+        
+        
+        
+        #fetch instruction send to queue
+        addr = new_state.pc
+        inst = new_state.instruction_cache["cache"][addr//4]
+        new_state.instruction_queue["queue"].append({"addr": addr, "inst": inst})
+        new_state.pc += 4
 
+
+        #update actual_state and _states 
         _states.append(new_state)
         actual_state = _states[state_count]
 
-        #fetch instruction from cache to queue
         
