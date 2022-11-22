@@ -113,6 +113,8 @@ class State:
 
 global _states, actual_state, rs_names, rs_fields, rg_names
 actual_state = None
+ecall_fetched = False
+ecall_commited = False
 _states = []
 
 
@@ -165,7 +167,7 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
 
 
 def run(state_count):
-    global _states, actual_state
+    global _states, actual_state, ecall_fetched, ecall_commited
 
     #state already exists
     if (state_count < len(_states)):
@@ -180,13 +182,39 @@ def run(state_count):
         new_state.clock += 1
 
         
-        
+        #send instruction to reservation stations
+        if(len(new_state.instruction_queue["queue"])>0):
+            inst = new_state.instruction_queue["queue"][0]["inst"]
+            addr = new_state.instruction_queue["queue"][0]["addr"]
+            inst_parced = inst.replace(",", " ").split()
+            if(inst_parced[0] == "add"):
+                pass
+            elif(inst_parced[0] == "addi"):
+                pass
+            elif(inst_parced[0] == "sub"):
+                pass
+            elif(inst_parced[0] == "beq"):
+                pass
+            elif(inst_parced[0] == "mul"):
+                pass
+            elif(inst_parced[0] == "div"):
+                pass
+            elif(inst_parced[0] == "lw"):
+                pass
+            elif(inst_parced[0] == "sw"):
+                pass
+            elif(inst_parced[0] == "ecall"):
+                pass
         
         #fetch instruction send to queue
-        addr = new_state.pc
-        inst = new_state.instruction_cache["cache"][addr//4]
-        new_state.instruction_queue["queue"].append({"addr": addr, "inst": inst})
-        new_state.pc += 4
+        if(not ecall_fetched):
+            addr = new_state.pc
+            inst = new_state.instruction_cache["cache"][addr//4]
+            new_state.instruction_queue["queue"].append({"addr": addr, "inst": inst})
+            new_state.pc += 4
+            if(inst == 'ecall'):
+                ecall_fetched = True
+                         
 
 
         #update actual_state and _states 
