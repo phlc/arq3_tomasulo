@@ -35,7 +35,7 @@ class State:
         #registers
         self.registers = {}
         for name in rg_names:
-            self.registers[name] = True
+            self.registers[name] = False
         self.registers["r0"] = 0
 
 
@@ -44,7 +44,7 @@ class State:
         for name in rs_names:
             self.reservation[name] = {}
             for field in rs_fields:
-                self.reservation[name][field] = True
+                self.reservation[name][field] = False
 
     def clone(self):
         #global constants
@@ -69,23 +69,14 @@ class State:
 
         #instruction queue
         cp.instruction_queue["size"] = self.instruction_queue["size"]
-        i = 0
         for item in self.instruction_queue["queue"]:
             cp.instruction_queue["queue"].append(
                 {"addr": item["addr"],
                 "inst": item["inst"]}
             )
-            i+=1
-
-        #reorder buffer
-        self.reorder_buffer = {
-            "buffer": [],
-            "size": 0
-        }
 
         #reorder buffer
         cp.reorder_buffer["size"]  = self.reorder_buffer["size"]
-        i = 0
         for item in self.reorder_buffer["buffer"]:
             cp.reorder_buffer["buffer"].append(
                 {"addr": item["addr"],
@@ -93,7 +84,7 @@ class State:
                 "dest": item["dest"],
                 "value": item["value"]}
             )
-            i+=1
+          
 
         #registers
         for name in rg_names:
@@ -182,29 +173,285 @@ def run(state_count):
         new_state.clock += 1
 
         
-        #send instruction to reservation stations
+        #send instruction to reservation stations and reorder buffer
         if(len(new_state.instruction_queue["queue"])>0):
             inst = new_state.instruction_queue["queue"][0]["inst"]
-            addr = new_state.instruction_queue["queue"][0]["addr"]
             inst_parced = inst.replace(",", " ").split()
-            if(inst_parced[0] == "add"):
-                pass
-            elif(inst_parced[0] == "addi"):
-                pass
-            elif(inst_parced[0] == "sub"):
-                pass
+            addr = new_state.instruction_queue["queue"][0]["addr"]
+
+            if(inst_parced[0] == "add" or inst_parced[0] == "addi" or inst_parced[0] == "sub"):
+
+                if new_state.reservation["add1"]["busy"] != 1:
+                    j = new_state.registers[inst_parced[2]]
+                    k = ""
+                    if(inst_parced[0] == "addi"):
+                        k = inst_parced[3]
+                    else:
+                        k = new_state.registers[inst_parced[3]]
+
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == inst_parced[2]:
+                            j = item["value"]
+                        if item["dest"] == inst_parced[3]:
+                            k = item["value"]  
+
+                    try:
+                        new_state.reservation["add1"]["vj"] = int(j)
+                        new_state.reservation["add1"]["qj"] = " "
+                    except:
+                        new_state.reservation["add1"]["qj"] = j
+                        new_state.reservation["add1"]["vj"] = " "
+                    try:
+                        new_state.reservation["add1"]["vk"] = int(k)
+                        new_state.reservation["add1"]["qk"] = " "
+                    except:
+                        new_state.reservation["add1"]["qk"] = k
+                        new_state.reservation["add1"]["vk"] = " "
+
+                    new_state.reservation["add1"]["addr"] = addr
+                    new_state.reservation["add1"]["busy"] = 1
+                    new_state.reservation["add1"]["op"] = inst_parced[0]
+
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": inst_parced[1],
+                        "value": "add1"
+                    })
+
+                elif new_state.reservation["add2"]["busy"] != 1:
+                    j = new_state.registers[inst_parced[2]]
+                    k = ""
+                    if(inst_parced[0] == "addi"):
+                        k = inst_parced[3]
+                    else:
+                        k = new_state.registers[inst_parced[3]]
+
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == inst_parced[2]:
+                            j = item["value"]
+                        if item["dest"] == inst_parced[3]:
+                            k = item["value"]  
+
+                    try:
+                        new_state.reservation["add2"]["vj"] = int(j)
+                        new_state.reservation["add2"]["qj"] = " "
+                    except:
+                        new_state.reservation["add2"]["qj"] = j
+                        new_state.reservation["add2"]["vj"] = " "
+                    try:
+                        new_state.reservation["add2"]["vk"] = int(k)
+                        new_state.reservation["add2"]["qk"] = " "
+                    except:
+                        new_state.reservation["add2"]["qk"] = k
+                        new_state.reservation["add2"]["vk"] = " "
+
+                    new_state.reservation["add2"]["addr"] = addr
+                    new_state.reservation["add2"]["busy"] = 1
+                    new_state.reservation["add2"]["op"] = inst_parced[0]
+
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": inst_parced[1],
+                        "value": "add2"
+                    })
+
+                   
+
             elif(inst_parced[0] == "beq"):
-                pass
-            elif(inst_parced[0] == "mul"):
-                pass
-            elif(inst_parced[0] == "div"):
-                pass
+                if new_state.reservation["branch"]["busy"] != 1:
+                    new_state.reservation["branch"]["busy"] = 1
+                    new_state.instruction_queue["queue"].pop(0)
+                
+
+            elif(inst_parced[0] == "mul" or inst_parced[0] == "div"):
+                if new_state.reservation["mult1"]["busy"] != 1:
+                    j = new_state.registers[inst_parced[2]]
+                    k = new_state.registers[inst_parced[3]]
+
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == inst_parced[2]:
+                            j = item["value"]
+                        if item["dest"] == inst_parced[3]:
+                            k = item["value"]  
+
+                    try:
+                        new_state.reservation["mult1"]["vj"] = int(j)
+                        new_state.reservation["mult1"]["qj"] = " "
+                    except:
+                        new_state.reservation["mult1"]["qj"] = j
+                        new_state.reservation["mult1"]["vj"] = " "
+                    try:
+                        new_state.reservation["mult1"]["vk"] = int(k)
+                        new_state.reservation["mult1"]["qk"] = " "
+                    except:
+                        new_state.reservation["mult1"]["qk"] = k
+                        new_state.reservation["mult1"]["vk"] = " "
+
+                    new_state.reservation["mult1"]["addr"] = addr
+                    new_state.reservation["mult1"]["busy"] = 1
+                    new_state.reservation["mult1"]["op"] = inst_parced[0]
+
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": inst_parced[1],
+                        "value": "mult1"
+                    })
+
+                elif new_state.reservation["mult2"]["busy"] != 1:
+                    j = new_state.registers[inst_parced[2]]
+                    k = new_state.registers[inst_parced[3]]
+
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == inst_parced[2]:
+                            j = item["value"]
+                        if item["dest"] == inst_parced[3]:
+                            k = item["value"]  
+
+                    try:
+                        new_state.reservation["mult2"]["vj"] = int(j)
+                        new_state.reservation["mult2"]["qj"] = " "
+                    except:
+                        new_state.reservation["mult2"]["qj"] = j
+                        new_state.reservation["mult2"]["vj"] = " "
+                    try:
+                        new_state.reservation["mult2"]["vk"] = int(k)
+                        new_state.reservation["mult2"]["qk"] = " "
+                    except:
+                        new_state.reservation["mult2"]["qk"] = k
+                        new_state.reservation["mult2"]["vk"] = " "
+
+                    new_state.reservation["mult2"]["addr"] = addr
+                    new_state.reservation["mult2"]["busy"] = 1
+                    new_state.reservation["mult2"]["op"] = inst_parced[0]
+
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": inst_parced[1],
+                        "value": "mult2"
+                    })
+                
+
             elif(inst_parced[0] == "lw"):
-                pass
+                if new_state.reservation["load1"]["busy"] != 1:
+                    new_state.reservation["load1"]["addr"] = addr
+                    new_state.reservation["load1"]["busy"] = 1
+                    new_state.reservation["load1"]["op"] = inst_parced[0]
+                    (imm, reg) = inst_parced[2].strip(")").split("(")
+                    imm = int(imm)
+                    source = new_state.registers[reg]
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == reg:
+                            source = item["value"]
+
+                    try:
+                        source = int(source)
+                        new_state.reservation["load1"]["a"] = imm + source
+                    except:
+                        new_state.reservation["load1"]["a"] = f'{imm} + ({source})'                    
+                    
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": inst_parced[1],
+                        "value": "load1"
+                    })
+
+
+                elif new_state.reservation["load2"]["busy"] != 1:
+                    new_state.reservation["load2"]["addr"] = addr
+                    new_state.reservation["load2"]["busy"] = 1
+                    new_state.reservation["load2"]["op"] = inst_parced[0]
+                    (imm, reg) = inst_parced[2].strip(")").split("(")
+                    imm = int(imm)
+                    source = new_state.registers[reg]
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == reg:
+                            source = item["value"]
+
+                    try:
+                        source = int(source)
+                        new_state.reservation["load2"]["a"] = imm + source
+                    except:
+                        new_state.reservation["load2"]["a"] = f'{imm} + ({source})'                    
+                    
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": inst_parced[1],
+                        "value": "load2"
+                    })
+
             elif(inst_parced[0] == "sw"):
-                pass
+                if new_state.reservation["store"]["busy"] != 1:
+                    new_state.reservation["store"]["addr"] = addr
+                    new_state.reservation["store"]["busy"] = 1
+                    new_state.reservation["store"]["op"] = inst_parced[0]
+                    (imm, reg) = inst_parced[2].strip(")").split("(")
+                    imm = int(imm)
+                    value = new_state.registers[inst_parced[1]]
+                    dest = new_state.registers[reg]
+
+                    for item in new_state.reorder_buffer["buffer"]:
+                        if item["dest"] == reg:
+                            dest = item["value"]
+                        if item["dest"] == inst_parced[1]:
+                            value = item["value"]
+
+                    try:
+                        dest = int(dest)
+                        new_state.reservation["store"]["a"] = imm + dest
+                    except:
+                        new_state.reservation["store"]["a"] = f'{imm} + ({source})'
+
+                    try:
+                        new_state.reservation["store"]["vj"] = int(value)
+                        new_state.reservation["add2"]["qj"] = " "
+                    except:
+                        new_state.reservation["add2"]["qj"] = value
+                        new_state.reservation["add2"]["vj"] = " "                  
+                    
+                    new_state.instruction_queue["queue"].pop(0)
+
+                    #reorder buffer
+                    new_state.reorder_buffer["buffer"].append({
+                        "addr": addr,
+                        "type": inst_parced[0],
+                        "dest": new_state.reservation["store"]["a"],
+                        "value": value
+                    })
+
             elif(inst_parced[0] == "ecall"):
-                pass
+                #reorder buffer
+                new_state.reorder_buffer["buffer"].append({
+                    "addr": addr,
+                    "type": inst_parced[0],
+                    "dest": " ",
+                    "value": " "
+                })
+
+            
         
         #fetch instruction send to queue
         if(not ecall_fetched):

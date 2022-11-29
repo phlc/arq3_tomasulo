@@ -1481,6 +1481,67 @@ background-color: rgb(0, 0, 0);</string>
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
+   <widget class="QLabel" name="adders_3">
+    <property name="geometry">
+     <rect>
+      <x>406</x>
+      <y>584</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Loads</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="adders_4">
+    <property name="geometry">
+     <rect>
+      <x>536</x>
+      <y>584</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Adders</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="mult_2">
+    <property name="geometry">
+     <rect>
+      <x>666</x>
+      <y>584</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Mults</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <zorder>clock_label</zorder>
    <zorder>title</zorder>
    <zorder>clock_btn_plus</zorder>
@@ -1564,6 +1625,9 @@ background-color: rgb(0, 0, 0);</string>
    <zorder>line_60</zorder>
    <zorder>line_61</zorder>
    <zorder>reorder_buffer</zorder>
+   <zorder>adders_3</zorder>
+   <zorder>adders_4</zorder>
+   <zorder>mult_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

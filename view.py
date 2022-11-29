@@ -19,7 +19,7 @@ global clock, pc, inst_cache, data_cache, inst_queue, registers, reorder_buffer
 # Config
 loaded = False
 state_count = 0
-inst_cache_size = 8
+inst_cache_size = 16
 data_cache_size = 8
 queue_size = 6
 reorder_buffer_size = 10
@@ -280,10 +280,10 @@ class View(QMainWindow):
         #reorder buffer
         i = 0
         while(i < len(tm.actual_state.reorder_buffer["buffer"])):
-            reorder_buffer.item(i+1,0).setText(tm.actual_state.reorder_buffer["buffer"][i]["addr"])
-            reorder_buffer.item(i+1,1).setText(tm.actual_state.reorder_buffer["buffer"][i]["type"])
-            reorder_buffer.item(i+1,2).setText(tm.actual_state.reorder_buffer["buffer"][i]["dest"])
-            reorder_buffer.item(i+1,3).setText(tm.actual_state.reorder_buffer["buffer"][i]["value"])
+            reorder_buffer.item(i+1,0).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["addr"]))
+            reorder_buffer.item(i+1,1).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["type"]))
+            reorder_buffer.item(i+1,2).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["dest"]))
+            reorder_buffer.item(i+1,3).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["value"]))
             i+=1
         while(i < tm.actual_state.reorder_buffer["size"]):
             reorder_buffer.item(i+1,0).setText("-")
