@@ -280,33 +280,27 @@ class View(QMainWindow):
         #reorder buffer
         i = 0
         while(i < len(tm.actual_state.reorder_buffer["buffer"])):
-            reorder_buffer.item(i+1,0).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["addr"]))
-            reorder_buffer.item(i+1,1).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["type"]))
-            reorder_buffer.item(i+1,2).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["dest"]))
-            reorder_buffer.item(i+1,3).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["value"]))
+            reorder_buffer.item(reorder_buffer_size - i,0).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["addr"]))
+            reorder_buffer.item(reorder_buffer_size - i,1).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["type"]))
+            reorder_buffer.item(reorder_buffer_size - i,2).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["dest"]))
+            reorder_buffer.item(reorder_buffer_size - i,3).setText(str(tm.actual_state.reorder_buffer["buffer"][i]["value"]))
             i+=1
         while(i < tm.actual_state.reorder_buffer["size"]):
-            reorder_buffer.item(i+1,0).setText("-")
-            reorder_buffer.item(i+1,1).setText("-")
-            reorder_buffer.item(i+1,2).setText("-")
-            reorder_buffer.item(i+1,3).setText("-")
+            reorder_buffer.item(reorder_buffer_size - i,0).setText("-")
+            reorder_buffer.item(reorder_buffer_size - i,1).setText("-")
+            reorder_buffer.item(reorder_buffer_size - i,2).setText("-")
+            reorder_buffer.item(reorder_buffer_size - i,3).setText("-")
             i+=1
 
 
         #registers
-        for i, name in zip(range(0, 10), rg_names):
-                if(isinstance(tm.actual_state.registers[name], bool)):
-                    registers.item(1,i).setText("-")
-                else:
-                    registers.item(1,i).setText(str(tm.actual_state.registers[name]))
+        for i, name in zip(range(0, 10), rg_names):    
+            registers.item(1,i).setText(str(tm.actual_state.registers[name]))
 
         #reservation stations
         for i, name in zip(range(1, 9), rs_names):
             for j, field in zip(range(1, 9), rs_fields):
-                if(isinstance(tm.actual_state.reservation[name][field], bool)):
-                    reservation.item(i,j).setText("-")
-                else:
-                    reservation.item(i,j).setText(str(tm.actual_state.reservation[name][field]))
+                reservation.item(i,j).setText(str(tm.actual_state.reservation[name][field]))
             
 
     def clock_plus(self):
