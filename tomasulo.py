@@ -202,6 +202,25 @@ def run(sign):
             for item in new_state.reorder_buffer["buffer"]:
                 if(item["value"] == "branch"):
                     item["value"] = value_branch
+                    if(value_branch):
+                        new_state.pc = item["dest"]+4
+                        for i in range(0, len(new_state.reorder_buffer["buffer"])):
+                            if(int(new_state.reorder_buffer["buffer"][i]["addr"]) > item["addr"]):
+                                new_state.reorder_buffer["buffer"].pop(i)
+
+                        for name in rs_names:
+                            if(new_state.reservation[name]["addr"] != "-" and int(new_state.reservation[name]["addr"]) > item["addr"]):
+                                for field in rs_fields:
+                                    new_state.reservation[name][field] = "-"
+
+                        for i in range(0, len(new_state.instruction_queue["queue"])):
+                            if(int(new_state.instruction_queue["queue"][i]["addr"]) > item["addr"]):
+                                new_state.instruction_queue["queue"].pop(i)
+                        
+                        _states.append(new_state)
+                        actual_state = _states[state_count]
+                        return
+                        
 
         if(isinstance(value_mult1, int)):
             for item in new_state.reorder_buffer["buffer"]:

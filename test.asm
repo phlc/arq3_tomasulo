@@ -1,5 +1,5 @@
 LW r1, 0(r0)
-ADDI r2, r0, 4
+ADDI r2, r0, 2
 SW r2, 0(r0)
 LW r3, 4(r1)
 BEQ r3, r2, 16
