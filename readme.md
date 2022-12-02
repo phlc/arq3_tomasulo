@@ -8,8 +8,6 @@ Risc-V Supported Instructions:
 
     SUB rd, rs1, rs2
 
-    BEQ rs1, rs2, imm
-
     MUL rd, rs1, rs2
 
     DIV rd, rs1, rs2
@@ -17,3 +15,5 @@ Risc-V Supported Instructions:
     LW rd, imm(rs1)
 
     SW rs1, imm(rd)
+
+    BEQ rs1, rs2, imm

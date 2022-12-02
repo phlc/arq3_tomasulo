@@ -2,19 +2,21 @@ from state import State
 
 # Global Variables
 
-global _states, actual_state, rs_names, rs_fields, rg_names
+global _states, actual_state, state_count, rs_names, rs_fields, rg_names
 global value_add1, value_add2, value_mult1, value_mult2
 global value_branch, value_store, dest_store, value_load1, value_load2
 
 actual_state = None
 ecall_fetched = False
-ecall_commited = False
+ecall_commited_at = 1000000
+state_count = 0
 _states = []
 value_add1 = value_add2 = value_mult1 = value_mult2 = "-"
 value_branch = value_store = dest_store = value_load1 = value_load2 = "-"
 
 def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size):
-    global _states, actual_state
+    global _states, actual_state, state_count
+    state_count = 0
     actual_state = None
     _states = []
     tmp_inst_cache = []
@@ -61,10 +63,17 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
     actual_state = _states[0]
 
 
-def run(state_count):
-    global _states, actual_state, ecall_fetched, ecall_commited
+def run(sign):
+    global _states, actual_state, state_count, ecall_fetched, ecall_commited_at
     global value_add1, value_add2, value_mult1, value_mult2
     global value_branch, value_store, dest_store, value_load1, value_load2
+
+    if(sign == "+"):
+        if(state_count < ecall_commited_at):
+            state_count += 1
+    elif(sign == "-"):
+        if(state_count > 0):
+            state_count -= 1
 
     #state already exists
     if (state_count < len(_states)):
@@ -78,6 +87,26 @@ def run(state_count):
         #update clock
         new_state.clock += 1
 
+        # check and commit reorder buffer
+        if(len(new_state.reorder_buffer["buffer"])>0):
+            next = new_state.reorder_buffer["buffer"][0]
+
+            if(next["type"] == "ecall"):
+                ecall_commited_at = state_count
+                new_state.reorder_buffer["buffer"].pop(0)
+
+            elif(next["type"] == "beq"):
+                if(isinstance(next["value"], int)):
+                    new_state.reorder_buffer["buffer"].pop(0)
+
+            elif(next["type"] == "sw"):
+                if(isinstance(next["value"], int) and isinstance(next["dest"], int)):
+                    new_state.data_cache["cache"][next["dest"]] = next["value"]
+                    new_state.reorder_buffer["buffer"].pop(0)
+            else:
+                if(isinstance(next["value"], int)):
+                    new_state.registers[next["dest"]] = next["value"]
+                    new_state.reorder_buffer["buffer"].pop(0)
 
 
         #check reservation stations for ready instructions
@@ -170,7 +199,9 @@ def run(state_count):
             value_add2 = " "
 
         if(isinstance(value_branch, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["value"] == "branch"):
+                    item["value"] = value_branch
 
         if(isinstance(value_mult1, int)):
             for item in new_state.reorder_buffer["buffer"]:
@@ -564,6 +595,8 @@ def run(state_count):
                     "dest": " ",
                     "value": " "
                 })
+                new_state.instruction_queue["queue"].pop(0)
+
 
             
         

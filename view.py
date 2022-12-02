@@ -12,14 +12,13 @@ global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
 global rs_names, rs_fields, rg_names
 
 # Global Control Variables
-global loaded, state_count
+global loaded
 
 # Global Gui Variables
 global clock, pc, inst_cache, data_cache, inst_queue, registers, reorder_buffer
 
 # Config
 loaded = False
-state_count = 0
 inst_cache_size = 16
 data_cache_size = 8
 queue_size = 6
@@ -42,7 +41,7 @@ class View(QMainWindow):
         global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
 
         #global variables
-        global loaded, state_count
+        global loaded
         #globa gui variables
         global clock, pc, inst_cache, data_cache, inst_queue, reorder_buffer, registers, reservation
 
@@ -222,11 +221,10 @@ class View(QMainWindow):
     def loadFile(self):
         global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size
 
-        global loaded, state_count
+        global loaded
         fname = QFileDialog.getOpenFileName(self, "Load File", "", "Python Files (*.asm)")
         if fname:
             loaded = True
-            state_count = 0
             fname = fname[0]
             tm.load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size)
             self.show_data()
@@ -305,23 +303,20 @@ class View(QMainWindow):
             
 
     def clock_plus(self):
-        global loaded, state_count
+        global loaded
         if(not loaded):
             self.error()
         else:
-            state_count += 1
-            tm.run(state_count)
+            tm.run("+")
             self.show_data()
             
 
     def clock_minus(self):
-        global loaded, state_count
+        global loaded
         if(not loaded):
             self.error()
         else:
-            if(state_count > 0):
-                state_count -= 1
-            tm.run(state_count)
+            tm.run("-")
             self.show_data()
 
     def error(self):
