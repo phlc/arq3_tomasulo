@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget
 from PyQt5.QtCore import Qt
 from ui_form import Ui_View
 import tomasulo as tm
+import state as st
 
 # Constants
 global inst_cache_size, data_cache_size, queue_size, reorder_buffer_size 
@@ -26,9 +27,9 @@ reorder_buffer_size = 10
 rs_names = ["store", "branch", "mult1", "mult2", "add1", "add2", "load1", "load2"]
 rs_fields = ["addr", "busy", "op", "vj", "vk", "qj", "qk", "a"]
 rg_names = ["r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"]
-tm.rs_names = rs_names
-tm.rs_fields = rs_fields
-tm.rg_names = rg_names
+tm.rs_names = st.rs_names = rs_names
+tm.rs_fields = st.rs_fields = rs_fields
+tm.rg_names = st. rg_names = rg_names
 
 
 class View(QMainWindow):
