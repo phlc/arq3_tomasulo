@@ -239,9 +239,10 @@ def run(state_count):
                 new_state.reservation["load2"][field] = "-"
 
         # store
-        if (isinstance(new_state.reservation["store"]["a"], int) and isinstance(new_state.reservation["store"]["vj"], int)):
-            dest_store = new_state.reservation["store"]["a"]
+        if (isinstance(new_state.reservation["store"]["vj"], int) and isinstance(new_state.reservation["store"]["vk"], int)):
+            imm = int(new_state.reservation["store"]["a"].split("(")[0])
             value_store = new_state.reservation["store"]["vj"]
+            dest_store = imm + new_state.reservation["store"]["vk"]
             for field in rs_fields:
                 new_state.reservation["store"][field] = "-"
 
@@ -251,22 +252,71 @@ def run(state_count):
             for item in new_state.reorder_buffer["buffer"]:
                 if(item["value"] == "add1"):
                     item["value"] = value_add1
+            for name in rs_names:
+                for field in rs_fields:
+                    if(new_state.reservation[name][field] == "add1"):
+                        new_state.reservation[name][field] = value_add1
+            value_add1 = " "
 
             
         if(isinstance(value_add2, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["value"] == "add2"):
+                    item["value"] = value_add2
+            for name in rs_names:
+                for field in rs_fields:
+                    if(new_state.reservation[name][field] == "add2"):
+                        new_state.reservation[name][field] = value_add2
+            value_add2 = " "
+
         if(isinstance(value_branch, int)):
             pass
+
         if(isinstance(value_mult1, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["value"] == "mult1"):
+                    item["value"] = value_mult1
+            for name in rs_names:
+                for field in rs_fields:
+                    if(new_state.reservation[name][field] == "mult1"):
+                        new_state.reservation[name][field] = value_mult1
+            value_mult1 = " "
+
         if(isinstance(value_mult2, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["value"] == "mult2"):
+                    item["value"] = value_mult2
+            for name in rs_names:
+                for field in rs_fields:
+                    if(new_state.reservation[name][field] == "mult2"):
+                        new_state.reservation[name][field] = value_mult2
+            value_mult2 = " "
+
         if(isinstance(value_load1, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["value"] == "load1"):
+                    item["value"] = value_load1
+            for name in rs_names:
+                for field in rs_fields:
+                    if(new_state.reservation[name][field] == "load1"):
+                        new_state.reservation[name][field] = value_load1
+            value_load1 = " "
+
         if(isinstance(value_load2, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["value"] == "load2"):
+                    item["value"] = value_load2
+            for name in rs_names:
+                for field in rs_fields:
+                    if(new_state.reservation[name][field] == "load2"):
+                        new_state.reservation[name][field] = value_load2
+            value_load2 = " "
+
         if(isinstance(value_store, int) and isinstance(dest_store, int)):
-            pass
+            for item in new_state.reorder_buffer["buffer"]:
+                if(item["dest"] == "store"):
+                    item["value"] = value_store
+                    item["dest"] = dest_store
         
 
         
@@ -505,17 +555,18 @@ def run(state_count):
 
                     try:
                         source = int(source)
-                        new_state.reservation["load1"]["a"] = imm + source
+                        new_state.reservation["load1"]["a"] = f'{imm}({source})'
+                        new_state.reservation["load1"]["vj"] = source
+                        new_state.reservation["load1"]["vk"] = imm
+                        new_state.reservation["load1"]["qk"] = " "
                         new_state.reservation["load1"]["qj"] = " "
-                        new_state.reservation["load1"]["vk"] = " "
                     except:
-                        new_state.reservation["load1"]["a"] = f'{imm}+{source}'
+                        new_state.reservation["load1"]["a"] = f'{imm}({source})'
                         new_state.reservation["load1"]["qj"] = source
-                        new_state.reservation["load1"]["vk"] = imm                    
+                        new_state.reservation["load1"]["vk"] = imm  
+                        new_state.reservation["load1"]["qk"] = " "
+                        new_state.reservation["load1"]["qj"] = " "                  
                     
-        
-                    new_state.reservation["load1"]["qk"] = " "
-                    new_state.reservation["load1"]["vj"] = " "
                     new_state.instruction_queue["queue"].pop(0)
 
                     #reorder buffer
@@ -540,17 +591,18 @@ def run(state_count):
 
                     try:
                         source = int(source)
-                        new_state.reservation["load2"]["a"] = imm + source
+                        new_state.reservation["load2"]["a"] = f'{imm}({source})'
+                        new_state.reservation["load2"]["vj"] = source
+                        new_state.reservation["load2"]["vk"] = imm
+                        new_state.reservation["load2"]["qk"] = " "
                         new_state.reservation["load2"]["qj"] = " "
-                        new_state.reservation["load2"]["vk"] = " "
                     except:
-                        new_state.reservation["load2"]["a"] = f'{imm}+{source}'
+                        new_state.reservation["load2"]["a"] = f'{imm}({source})'
                         new_state.reservation["load2"]["qj"] = source
-                        new_state.reservation["load2"]["vk"] = imm                    
+                        new_state.reservation["load2"]["vk"] = imm  
+                        new_state.reservation["load2"]["qk"] = " "
+                        new_state.reservation["load2"]["qj"] = " " 
                     
-        
-                    new_state.reservation["load2"]["qk"] = " "
-                    new_state.reservation["load2"]["vj"] = " "
                     new_state.instruction_queue["queue"].pop(0)
 
                     #reorder buffer
@@ -580,10 +632,11 @@ def run(state_count):
 
                     try:
                         dest = int(dest)
-                        new_state.reservation["store"]["a"] = imm + dest
+                        new_state.reservation["store"]["vk"] = dest
+                        new_state.reservation["store"]["qk"] = " "
                     except:
-                        new_state.reservation["store"]["a"] = f'{imm}+{source}'
-
+                        new_state.reservation["store"]["qk"] = dest
+                        new_state.reservation["store"]["vk"] = " "
                     try:
                         new_state.reservation["store"]["vj"] = int(value)
                         new_state.reservation["store"]["qj"] = " "
@@ -591,15 +644,14 @@ def run(state_count):
                         new_state.reservation["store"]["qj"] = value
                         new_state.reservation["store"]["vj"] = " "                  
                     
-                    new_state.reservation["store"]["qk"] = " "
-                    new_state.reservation["store"]["vk"] = " "
+                    new_state.reservation["store"]["a"] = f'{imm}({dest})'
                     new_state.instruction_queue["queue"].pop(0)
 
                     #reorder buffer
                     new_state.reorder_buffer["buffer"].append({
                         "addr": addr,
                         "type": inst_parced[0],
-                        "dest": new_state.reservation["store"]["a"],
+                        "dest": "store",
                         "value": value
                     })
 

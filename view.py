@@ -179,7 +179,7 @@ class View(QMainWindow):
         reservation.setColumnWidth(5,60)
         reservation.setColumnWidth(6,60)
         reservation.setColumnWidth(7,60)
-        reservation.setColumnWidth(8,60)
+        reservation.setColumnWidth(8,67)
         reservation.setRowCount(9)
         reservation.verticalHeader().setVisible(False)
         reservation.horizontalHeader().setVisible(False)

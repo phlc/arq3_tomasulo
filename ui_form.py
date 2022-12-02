@@ -246,7 +246,7 @@ class Ui_View(object):
         self.branch.setAlignment(QtCore.Qt.AlignCenter)
         self.branch.setObjectName("branch")
         self.reservation = QtWidgets.QTableWidget(self.centralwidget)
-        self.reservation.setGeometry(QtCore.QRect(310, 200, 541, 271))
+        self.reservation.setGeometry(QtCore.QRect(303, 200, 548, 271))
         self.reservation.setObjectName("reservation")
         self.reservation.setColumnCount(9)
         self.reservation.setRowCount(0)
