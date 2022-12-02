@@ -1,10 +1,21 @@
 from state import State
 
+# Constants
+global CICLES_ADDER, CICLES_MULT, CICLES_BRANCH, CICLES_LOAD, CICLES_STORE
+CICLES_ADDER = 2
+CICLES_MULT = 3
+CICLES_BRANCH = 1
+CICLES_LOAD = 4 
+CICLES_STORE = 5
+
+
 # Global Variables
 
 global _states, actual_state, state_count, rs_names, rs_fields, rg_names
 global value_add1, value_add2, value_mult1, value_mult2
 global value_branch, value_store, dest_store, value_load1, value_load2
+global count_add1, count_add2, count_mult1, count_mult2
+global count_branch, count_store, count_load1, count_load2
 
 actual_state = None
 ecall_fetched = False
@@ -13,6 +24,8 @@ state_count = 0
 _states = []
 value_add1 = value_add2 = value_mult1 = value_mult2 = "-"
 value_branch = value_store = dest_store = value_load1 = value_load2 = "-"
+count_add1 = count_add2 = count_mult1 = count_mult2 = 0
+count_branch = count_store = count_load1 = count_load2 = 0
 
 def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size):
     global _states, actual_state, state_count
@@ -64,9 +77,12 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
 
 
 def run(sign):
+    global CICLES_ADDER, CICLES_MULT, CICLES_BRANCH, CICLES_LOAD, CICLES_STORE
     global _states, actual_state, state_count, ecall_fetched, ecall_commited_at
     global value_add1, value_add2, value_mult1, value_mult2
     global value_branch, value_store, dest_store, value_load1, value_load2
+    global count_add1, count_add2, count_mult1, count_mult2
+    global count_branch, count_store, count_load1, count_load2
 
     if(sign == "+"):
         if(state_count < ecall_commited_at):
@@ -112,68 +128,84 @@ def run(sign):
         #check reservation stations for ready instructions
         # add1
         if (isinstance(new_state.reservation["add1"]["vj"], int) and isinstance(new_state.reservation["add1"]["vk"], int)):
-            if(new_state.reservation["add1"]["op"] == "sub"):
-                value_add1 = new_state.reservation["add1"]["vj"] - new_state.reservation["add1"]["vk"]
-            else:
-                value_add1 = new_state.reservation["add1"]["vj"] + new_state.reservation["add1"]["vk"]
-            for field in rs_fields:
-                new_state.reservation["add1"][field] = "-"
+            count_add1 += 1
+            if(count_add1 % CICLES_ADDER == 0):
+                if(new_state.reservation["add1"]["op"] == "sub"):
+                    value_add1 = new_state.reservation["add1"]["vj"] - new_state.reservation["add1"]["vk"]
+                else:
+                    value_add1 = new_state.reservation["add1"]["vj"] + new_state.reservation["add1"]["vk"]
+                for field in rs_fields:
+                    new_state.reservation["add1"][field] = "-"
 
         # add2
         if (isinstance(new_state.reservation["add2"]["vj"], int) and isinstance(new_state.reservation["add2"]["vk"], int)):
-            if(new_state.reservation["add2"]["op"] == "sub"):
-                value_add2 = new_state.reservation["add2"]["vj"] - new_state.reservation["add2"]["vk"]
-            else:
-                value_add2 = new_state.reservation["add2"]["vj"] + new_state.reservation["add2"]["vk"]
-            for field in rs_fields:
-                new_state.reservation["add2"][field] = "-"
+            count_add2 += 1
+            if(count_add2 % CICLES_ADDER == 0):
+                if(new_state.reservation["add2"]["op"] == "sub"):
+                    value_add2 = new_state.reservation["add2"]["vj"] - new_state.reservation["add2"]["vk"]
+                else:
+                    value_add2 = new_state.reservation["add2"]["vj"] + new_state.reservation["add2"]["vk"]
+                for field in rs_fields:
+                    new_state.reservation["add2"][field] = "-"
 
         # branch
         if (isinstance(new_state.reservation["branch"]["vj"], int) and isinstance(new_state.reservation["branch"]["vk"], int)):
-            value_branch = int(new_state.reservation["branch"]["vj"] == new_state.reservation["branch"]["vk"])
-            for field in rs_fields:
-                new_state.reservation["branch"][field] = "-"
+            count_branch += 1
+            if(count_branch % CICLES_BRANCH == 0):
+                value_branch = int(new_state.reservation["branch"]["vj"] == new_state.reservation["branch"]["vk"])
+                for field in rs_fields:
+                    new_state.reservation["branch"][field] = "-"
 
         # mult1
         if (isinstance(new_state.reservation["mult1"]["vj"], int) and isinstance(new_state.reservation["mult1"]["vk"], int)):
-            if(new_state.reservation["mult1"]["op"] == "mul"):
-                value_mult1 = new_state.reservation["mult1"]["vj"] * new_state.reservation["mult1"]["vk"]
-            else:
-                value_mult1 = new_state.reservation["mult1"]["vj"] // new_state.reservation["mult1"]["vk"]
-            for field in rs_fields:
-                new_state.reservation["mult1"][field] = "-"
+            count_mult2 += 1
+            if(count_mult2 % CICLES_MULT == 0):
+                if(new_state.reservation["mult1"]["op"] == "mul"):
+                    value_mult1 = new_state.reservation["mult1"]["vj"] * new_state.reservation["mult1"]["vk"]
+                else:
+                    value_mult1 = new_state.reservation["mult1"]["vj"] // new_state.reservation["mult1"]["vk"]
+                for field in rs_fields:
+                    new_state.reservation["mult1"][field] = "-"
 
         # mult2
         if (isinstance(new_state.reservation["mult2"]["vj"], int) and isinstance(new_state.reservation["mult2"]["vk"], int)):
-            if(new_state.reservation["mult2"]["op"] == "mul"):
-                value_mult2 = new_state.reservation["mult2"]["vj"] * new_state.reservation["mult2"]["vk"]
-            else:
-                value_mult2 = new_state.reservation["mult2"]["vj"] // new_state.reservation["mult2"]["vk"]
-            for field in rs_fields:
-                new_state.reservation["mult2"][field] = "-"
+            count_mult2 += 1
+            if(count_mult2 % CICLES_MULT == 0):
+                if(new_state.reservation["mult2"]["op"] == "mul"):
+                    value_mult2 = new_state.reservation["mult2"]["vj"] * new_state.reservation["mult2"]["vk"]
+                else:
+                    value_mult2 = new_state.reservation["mult2"]["vj"] // new_state.reservation["mult2"]["vk"]
+                for field in rs_fields:
+                    new_state.reservation["mult2"][field] = "-"
 
 
         # load1
         if (isinstance(new_state.reservation["load1"]["vj"], int)):
-            new_state.reservation["load1"]["a"] = new_state.reservation["load1"]["vj"] + new_state.reservation["load1"]["vk"]
-            value_load1 = new_state.data_cache["cache"][new_state.reservation["load1"]["a"]//4]
-            for field in rs_fields:
-                new_state.reservation["load1"][field] = "-"
+            count_load1 += 1
+            if(count_load1 % CICLES_LOAD == 0):
+                new_state.reservation["load1"]["a"] = new_state.reservation["load1"]["vj"] + new_state.reservation["load1"]["vk"]
+                value_load1 = new_state.data_cache["cache"][new_state.reservation["load1"]["a"]//4]
+                for field in rs_fields:
+                    new_state.reservation["load1"][field] = "-"
 
         # load2
         if (isinstance(new_state.reservation["load2"]["vj"], int)):
-            new_state.reservation["load2"]["a"] = new_state.reservation["load2"]["vj"] + new_state.reservation["load2"]["vk"]
-            value_load2 = new_state.data_cache["cache"][new_state.reservation["load2"]["a"]//4]
-            for field in rs_fields:
-                new_state.reservation["load2"][field] = "-"
+            count_load2 += 1
+            if(count_load2 % CICLES_LOAD == 0):
+                new_state.reservation["load2"]["a"] = new_state.reservation["load2"]["vj"] + new_state.reservation["load2"]["vk"]
+                value_load2 = new_state.data_cache["cache"][new_state.reservation["load2"]["a"]//4]
+                for field in rs_fields:
+                    new_state.reservation["load2"][field] = "-"
 
         # store
         if (isinstance(new_state.reservation["store"]["vj"], int) and isinstance(new_state.reservation["store"]["vk"], int)):
-            imm = int(new_state.reservation["store"]["a"].split("(")[0])
-            value_store = new_state.reservation["store"]["vj"]
-            dest_store = imm + new_state.reservation["store"]["vk"]
-            for field in rs_fields:
-                new_state.reservation["store"][field] = "-"
+            count_store += 1
+            if(count_store % CICLES_STORE == 0):
+                imm = int(new_state.reservation["store"]["a"].split("(")[0])
+                value_store = new_state.reservation["store"]["vj"]
+                dest_store = imm + new_state.reservation["store"]["vk"]
+                for field in rs_fields:
+                    new_state.reservation["store"][field] = "-"
 
 
         #forward values
@@ -184,7 +216,14 @@ def run(sign):
             for name in rs_names:
                 for field in rs_fields:
                     if(new_state.reservation[name][field] == "add1"):
-                        new_state.reservation[name][field] = value_add1
+                        if(field == "qj"):
+                            new_state.reservation[name]["vj"] = value_add1
+                            new_state.reservation[name]["qj"] = " "
+                        elif(field == "qk"):
+                            new_state.reservation[name]["vk"] = value_add1
+                            new_state.reservation[name]["qk"] = " "
+                        else:
+                            new_state.reservation[name][field] = value_add1
             value_add1 = " "
 
             
@@ -195,7 +234,14 @@ def run(sign):
             for name in rs_names:
                 for field in rs_fields:
                     if(new_state.reservation[name][field] == "add2"):
-                        new_state.reservation[name][field] = value_add2
+                        if(field == "qj"):
+                            new_state.reservation[name]["vj"] = value_add2
+                            new_state.reservation[name]["qj"] = " "
+                        elif(field == "qk"):
+                            new_state.reservation[name]["vk"] = value_add2
+                            new_state.reservation[name]["qk"] = " "
+                        else:
+                            new_state.reservation[name][field] = value_add2
             value_add2 = " "
 
         if(isinstance(value_branch, int)):
@@ -204,7 +250,7 @@ def run(sign):
                     item["value"] = value_branch
                     if(value_branch):
                         new_state.pc = item["dest"]+4
-                        for i in range(0, len(new_state.reorder_buffer["buffer"])):
+                        for i in range(len(new_state.reorder_buffer["buffer"])-1, -1, -1):
                             if(int(new_state.reorder_buffer["buffer"][i]["addr"]) > item["addr"]):
                                 new_state.reorder_buffer["buffer"].pop(i)
 
@@ -213,10 +259,11 @@ def run(sign):
                                 for field in rs_fields:
                                     new_state.reservation[name][field] = "-"
 
-                        for i in range(0, len(new_state.instruction_queue["queue"])):
+                        for i in range(len(new_state.instruction_queue["queue"])-1, -1, -1):
                             if(int(new_state.instruction_queue["queue"][i]["addr"]) > item["addr"]):
                                 new_state.instruction_queue["queue"].pop(i)
                         
+                        ecall_fetched = False
                         _states.append(new_state)
                         actual_state = _states[state_count]
                         return
@@ -229,7 +276,14 @@ def run(sign):
             for name in rs_names:
                 for field in rs_fields:
                     if(new_state.reservation[name][field] == "mult1"):
-                        new_state.reservation[name][field] = value_mult1
+                        if(field == "qj"):
+                            new_state.reservation[name]["vj"] = value_mult1
+                            new_state.reservation[name]["qj"] = " "
+                        elif(field == "qk"):
+                            new_state.reservation[name]["vk"] = value_mult1
+                            new_state.reservation[name]["qk"] = " "
+                        else:
+                            new_state.reservation[name][field] = value_mult1
             value_mult1 = " "
 
         if(isinstance(value_mult2, int)):
@@ -239,7 +293,14 @@ def run(sign):
             for name in rs_names:
                 for field in rs_fields:
                     if(new_state.reservation[name][field] == "mult2"):
-                        new_state.reservation[name][field] = value_mult2
+                        if(field == "qj"):
+                            new_state.reservation[name]["vj"] = value_mult2
+                            new_state.reservation[name]["qj"] = " "
+                        elif(field == "qk"):
+                            new_state.reservation[name]["vk"] = value_mult2
+                            new_state.reservation[name]["qk"] = " "
+                        else:
+                            new_state.reservation[name][field] = value_mult2
             value_mult2 = " "
 
         if(isinstance(value_load1, int)):
@@ -249,7 +310,14 @@ def run(sign):
             for name in rs_names:
                 for field in rs_fields:
                     if(new_state.reservation[name][field] == "load1"):
-                        new_state.reservation[name][field] = value_load1
+                        if(field == "qj"):
+                            new_state.reservation[name]["vj"] = value_load1
+                            new_state.reservation[name]["qj"] = " "
+                        elif(field == "qk"):
+                            new_state.reservation[name]["vk"] = value_load1
+                            new_state.reservation[name]["qk"] = " "
+                        else:
+                            new_state.reservation[name][field] = value_load1
             value_load1 = " "
 
         if(isinstance(value_load2, int)):
@@ -259,7 +327,14 @@ def run(sign):
             for name in rs_names:
                 for field in rs_fields:
                     if(new_state.reservation[name][field] == "load2"):
-                        new_state.reservation[name][field] = value_load2
+                        if(field == "qj"):
+                            new_state.reservation[name]["vj"] = value_load2
+                            new_state.reservation[name]["qj"] = " "
+                        elif(field == "qk"):
+                            new_state.reservation[name]["vk"] = value_load2
+                            new_state.reservation[name]["qk"] = " "
+                        else:
+                            new_state.reservation[name][field] = value_load2
             value_load2 = " "
 
         if(isinstance(value_store, int) and isinstance(dest_store, int)):
@@ -515,7 +590,7 @@ def run(sign):
                         new_state.reservation["load1"]["qj"] = source
                         new_state.reservation["load1"]["vk"] = imm  
                         new_state.reservation["load1"]["qk"] = " "
-                        new_state.reservation["load1"]["qj"] = " "                  
+                        new_state.reservation["load1"]["vj"] = " "                  
                     
                     new_state.instruction_queue["queue"].pop(0)
 
@@ -551,7 +626,7 @@ def run(sign):
                         new_state.reservation["load2"]["qj"] = source
                         new_state.reservation["load2"]["vk"] = imm  
                         new_state.reservation["load2"]["qk"] = " "
-                        new_state.reservation["load2"]["qj"] = " " 
+                        new_state.reservation["load2"]["vj"] = " " 
                     
                     new_state.instruction_queue["queue"].pop(0)
 
