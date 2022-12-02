@@ -6,7 +6,7 @@ CICLES_ADDER = 2
 CICLES_MULT = 3
 CICLES_BRANCH = 1
 CICLES_LOAD = 4 
-CICLES_STORE = 5
+CICLES_STORE = 1
 
 
 # Global Variables
@@ -219,6 +219,8 @@ def run(sign):
                         if(field == "qj"):
                             new_state.reservation[name]["vj"] = value_add1
                             new_state.reservation[name]["qj"] = " "
+                            if(name == "load1" or name == "load2"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("add1", f'{value_add1}')
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_add1
                             new_state.reservation[name]["qk"] = " "
@@ -237,6 +239,8 @@ def run(sign):
                         if(field == "qj"):
                             new_state.reservation[name]["vj"] = value_add2
                             new_state.reservation[name]["qj"] = " "
+                            if(name == "load1" or name == "load2"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("add2", f'{value_add2}')
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_add2
                             new_state.reservation[name]["qk"] = " "
@@ -279,6 +283,8 @@ def run(sign):
                         if(field == "qj"):
                             new_state.reservation[name]["vj"] = value_mult1
                             new_state.reservation[name]["qj"] = " "
+                            if(name == "load1" or name == "load2"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("mult1", f'{value_mult1}')
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_mult1
                             new_state.reservation[name]["qk"] = " "
@@ -296,6 +302,8 @@ def run(sign):
                         if(field == "qj"):
                             new_state.reservation[name]["vj"] = value_mult2
                             new_state.reservation[name]["qj"] = " "
+                            if(name == "load1" or name == "load2"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("mult2", f'{value_mult2}')
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_mult2
                             new_state.reservation[name]["qk"] = " "
@@ -313,6 +321,8 @@ def run(sign):
                         if(field == "qj"):
                             new_state.reservation[name]["vj"] = value_load1
                             new_state.reservation[name]["qj"] = " "
+                            if(name == "load1" or name == "load2"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("load1", f'{value_load1}')
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_load1
                             new_state.reservation[name]["qk"] = " "
@@ -330,6 +340,8 @@ def run(sign):
                         if(field == "qj"):
                             new_state.reservation[name]["vj"] = value_load2
                             new_state.reservation[name]["qj"] = " "
+                            if(name == "load1" or name == "load2"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("load2", f'{value_load2}')
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_load2
                             new_state.reservation[name]["qk"] = " "
