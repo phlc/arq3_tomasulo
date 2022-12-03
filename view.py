@@ -253,6 +253,7 @@ class View(QMainWindow):
         for i in range(1, inst_cache_size):
             inst_cache.item(i, 0).setBackground(QtGui.QBrush(QtGui.QColor("transparent")))
         inst_cache.item(tm.actual_state.pc//4 + 1, 0).setBackground(QtGui.QBrush(QtGui.QColor("red")))
+        inst_cache.scrollToItem(inst_cache.item(tm.actual_state.pc//4 + 1, 0), QtWidgets.QAbstractItemView.PositionAtCenter)
 
         #data cache
         i = 0
