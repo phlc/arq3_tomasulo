@@ -28,10 +28,21 @@ count_add1 = count_add2 = count_mult1 = count_mult2 = 0
 count_branch = count_store = count_load1 = count_load2 = 0
 
 def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_size):
-    global _states, actual_state, state_count
-    state_count = 0
+    global _states, actual_state, state_count, rs_names, rs_fields, rg_names, ecall_commited_at, ecall_fetched
+    global value_add1, value_add2, value_mult1, value_mult2
+    global value_branch, value_store, dest_store, value_load1, value_load2
+    global count_add1, count_add2, count_mult1, count_mult2
+    global count_branch, count_store, count_load1, count_load2
+
     actual_state = None
+    ecall_fetched = False
+    ecall_commited_at = 1000000
+    state_count = 0
     _states = []
+    value_add1 = value_add2 = value_mult1 = value_mult2 = "-"
+    value_branch = value_store = dest_store = value_load1 = value_load2 = "-"
+    count_add1 = count_add2 = count_mult1 = count_mult2 = 0
+    count_branch = count_store = count_load1 = count_load2 = 0
     tmp_inst_cache = []
     tmp_data_cache = []
 
