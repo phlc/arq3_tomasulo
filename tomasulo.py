@@ -37,17 +37,21 @@ def load(fname, inst_cache_size, data_cache_size, queue_size, reorder_buffer_siz
 
     # Read file
     with open(fname, "r") as file:
-        line = file.readline().strip('\n').strip().lower()
+        line = file.readline().split("//")
+        line = " ".join(line[0].strip('\n').strip().lower().split())
         while(line != ".data"):
             if(line != ""):
                 tmp_inst_cache.append(line)
-            line = file.readline().strip('\n').strip().lower()
+            line = file.readline().split("//")
+            line = " ".join(line[0].strip('\n').strip().lower().split())
 
-        line = file.readline().strip('\n').strip().lower()
+        line = file.readline().split("//")
+        line = line = " ".join(line[0].strip('\n').strip().lower().split())
         while(line):
             if(line != ""):
                 tmp_data_cache.append(int(line))
-            line = file.readline().strip('\n').strip().lower()
+            line = file.readline().split("//")
+            line = line = " ".join(line[0].strip('\n').strip().lower().split())
 
     # Create First State
     tmp_state = State()
@@ -117,7 +121,7 @@ def run(sign):
 
             elif(next["type"] == "sw"):
                 if(isinstance(next["value"], int) and isinstance(next["dest"], int)):
-                    new_state.data_cache["cache"][next["dest"]] = next["value"]
+                    new_state.data_cache["cache"][next["dest"]//4] = next["value"]
                     new_state.reorder_buffer["buffer"].pop(0)
             else:
                 if(isinstance(next["value"], int)):
@@ -270,7 +274,9 @@ def run(sign):
                         ecall_fetched = False
                         _states.append(new_state)
                         actual_state = _states[state_count]
+                        value_branch = " "
                         return
+                    value_branch = " "
                         
 
         if(isinstance(value_mult1, int)):
