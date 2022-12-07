@@ -239,6 +239,8 @@ def run(sign):
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_add1
                             new_state.reservation[name]["qk"] = " "
+                            if(name == "store"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("add1", f'{value_add1}')
                         else:
                             new_state.reservation[name][field] = value_add1
             value_add1 = " "
@@ -259,6 +261,8 @@ def run(sign):
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_add2
                             new_state.reservation[name]["qk"] = " "
+                            if(name == "store"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("add2", f'{value_add2}')
                         else:
                             new_state.reservation[name][field] = value_add2
             value_add2 = " "
@@ -305,6 +309,8 @@ def run(sign):
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_mult1
                             new_state.reservation[name]["qk"] = " "
+                            if(name == "store"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("mult1", f'{value_mult1}')
                         else:
                             new_state.reservation[name][field] = value_mult1
             value_mult1 = " "
@@ -324,6 +330,8 @@ def run(sign):
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_mult2
                             new_state.reservation[name]["qk"] = " "
+                            if(name == "store"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("mult2", f'{value_mult2}')
                         else:
                             new_state.reservation[name][field] = value_mult2
             value_mult2 = " "
@@ -343,6 +351,8 @@ def run(sign):
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_load1
                             new_state.reservation[name]["qk"] = " "
+                            if(name == "store"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("load1", f'{value_load1}')
                         else:
                             new_state.reservation[name][field] = value_load1
             value_load1 = " "
@@ -362,6 +372,8 @@ def run(sign):
                         elif(field == "qk"):
                             new_state.reservation[name]["vk"] = value_load2
                             new_state.reservation[name]["qk"] = " "
+                            if(name == "store"):
+                                new_state.reservation[name]["a"] = new_state.reservation[name]["a"].replace("load2", f'{value_load2}')
                         else:
                             new_state.reservation[name][field] = value_load2
             value_load2 = " "
